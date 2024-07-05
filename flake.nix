@@ -1,5 +1,5 @@
 {
-  description = "PercyGT's nix config";
+  description = "PercyGT's nix sources";
   nixConfig = {
     extra-substituters = ["https://nix-community.cachix.org"];
     extra-trusted-public-keys = ["nix-community.cachix.org-1:mB9FSh9qf2dCimDSUo8Zy7bkq5CX+/rkCWyvRCYg3Fs="];
@@ -23,6 +23,10 @@
         nixpkgs-stable.follows = "nixpkgs-stable";
       };
     };
+    neovim-nightly-overlay = {
+      url = "github:nix-community/neovim-nightly-overlay";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
   };
   outputs = {
     nixpkgs,
@@ -35,6 +39,7 @@
     overlays = {
       emacs = inputs.emacs-overlay.overlay;
       swayfx-unwrapped = inputs.swayfx-unwrapped.overlays.default;
+      neovim-nightly = inputs.neovim-nightly-overlay.overlays.default;
     };
     legacyPackages = forEachSystem (
       system:
@@ -50,6 +55,7 @@
     in {
       swayfx-src = pkgs.callPackage ({swayfx}: swayfx.override {inherit (pkgs) swayfx-unwrapped;}) {};
       emacs-unstable-pgtk = pkgs.callPackage ({emacs-unstable-pgtk}: emacs-unstable-pgtk.override {withTreeSitter = true;}) {};
+      neovim-unstable = pkgs.callPackage ({neovim}: neovim) {};
     });
     overlays = {
       default = final: prev: {
@@ -57,6 +63,7 @@
           (outputs.packages.${prev.system})
           swayfx-src
           emacs-unstable-pgtk
+          neovim-unstable
           ;
       };
     };
