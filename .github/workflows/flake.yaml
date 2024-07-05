@@ -78,8 +78,8 @@ jobs:
         run: cachix use "$CACHIX_BINARY_CACHE"
       - name: Build packages
         run: |
-          nix flake show --json \
+          nix flake show --accept-flake-config --json \
             | jq  '.packages."x86_64-linux"|keys[]' \
-            | xargs -I '{}' nix build --json --no-link --print-build-logs '.#{}' \
+            | xargs -I '{}' nix build --accept-flake-config --json --no-link --print-build-logs '.#{}' \
             | jq -r '.[].outputs | to_entries[].value' \
             | cachix push "$CACHIX_BINARY_CACHE"
