@@ -1,0 +1,84 @@
+---
+name: Test and cache flake packages
+
+"on":
+  push:
+  pull_request:
+  schedule:
+    - cron: 0 0 * * 1
+  workflow_dispatch:
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    outputs:
+      changed: ${{ steps.changes.outputs.changed }}
+    steps:
+      - uses: actions/checkout@v4.1.7
+      - uses: determinatesystems/nix-installer-action@main
+      - uses: determinatesystems/magic-nix-cache-action@main
+      - uses: determinatesystems/flake-checker-action@main
+
+      - name: Configure Git
+        run: |
+          git config user.name github-actions
+          git config user.email github-actions@github.com
+
+      - name: Update flake inputs
+        run: |
+          nix flake update
+          git commit -m "Updated flake inputs" flake.lock || true
+      - name: Push commit with updated inputs
+        run: |
+          git pull --rebase --autostash
+          git push
+
+      - uses: dorny/paths-filter@v3
+        id: changes
+        with:
+          filters: |
+            changed:
+              - 'flake.*'
+
+  archive:
+    needs: update
+    if: ${{ needs.update.outputs.changed == 'true' }}
+    runs-on: ubuntu-latest
+    env:
+      CACHIX_BINARY_CACHE: percygtdev
+    steps:
+      - uses: actions/checkout@v4
+      - uses: determinatesystems/nix-installer-action@main
+      - uses: cachix/cachix-action@v14
+        with:
+          authToken: ${{ secrets.CACHIX_AUTH_TOKEN }}
+          name: percygtdev
+      - name: Use cachix cache
+        run: cachix use "$CACHIX_BINARY_CACHE"
+      - name: Archive flake inputs
+        run: |
+          nix flake archive --json \
+          | jq -r '.path,(.inputs|to_entries[].value.path)' \
+          | cachix push "$CACHIX_BINARY_CACHE"
+
+  build:
+    needs: archive
+    runs-on: ubuntu-latest
+    env:
+      CACHIX_BINARY_CACHE: percygtdev
+    steps:
+      - uses: actions/checkout@v4
+      - uses: determinatesystems/nix-installer-action@main
+      - uses: cachix/cachix-action@v14
+        with:
+          authToken: ${{ secrets.CACHIX_AUTH_TOKEN }}
+          name: percygtdev
+      - name: Use cachix cache
+        run: cachix use "$CACHIX_BINARY_CACHE"
+      - name: Build packages
+        run: |
+          nix flake show --json \
+            | jq  '.packages."x86_64-linux"|keys[]' \
+            | xargs -I '{}' nix build --json --no-link --print-build-logs '.#{}' \
+            | jq -r '.[].outputs | to_entries[].value' \
+            | cachix push "$CACHIX_BINARY_CACHE"
