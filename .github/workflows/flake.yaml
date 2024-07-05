@@ -49,7 +49,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - uses: determinatesystems/nix-installer-action@main
-      - uses: cachix/cachix-action@v14
+      - uses: cachix/cachix-action@v15
         with:
           authToken: ${{ secrets.CACHIX_AUTH_TOKEN }}
           name: percygtdev
@@ -69,7 +69,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - uses: determinatesystems/nix-installer-action@main
-      - uses: cachix/cachix-action@v14
+      - uses: cachix/cachix-action@v15
         with:
           authToken: ${{ secrets.CACHIX_AUTH_TOKEN }}
           name: percygtdev
