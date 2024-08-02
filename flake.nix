@@ -68,15 +68,6 @@
           pkgs = legacyPackages.${system};
         in
         {
-          foot = pkgs.foot.overrideAttrs (_: {
-            src = inputs.foot;
-          });
-          swayfx-unwrapped = pkgs.swayfx-unwrapped.overrideAttrs (old: {
-            version = "0.4.0-git";
-            src = inputs.swayfx-unwrapped;
-            nativeBuildInputs = old.nativeBuildInputs ++ [ pkgs.cmake ];
-            buildInputs = old.buildInputs ++ [ pkgs.scenefx ];
-          });
           emacs-unstable-pgtk = pkgs.callPackage (
             { emacs-unstable-pgtk }: emacs-unstable-pgtk.override { withTreeSitter = true; }
           ) { };
@@ -85,7 +76,16 @@
       );
       overlays = {
         default = final: prev: {
-          inherit (outputs.packages.${prev.system}) swayfx-unwrapped emacs-unstable-pgtk neovim-unstable;
+          inherit (outputs.packages.${prev.system}) emacs-unstable-pgtk neovim-unstable;
+          foot = prev.foot.overrideAttrs (_: {
+            src = inputs.foot;
+          });
+          swayfx-unwrapped = prev.swayfx-unwrapped.overrideAttrs (old: {
+            version = "0.4.0-git";
+            src = inputs.swayfx-unwrapped;
+            nativeBuildInputs = old.nativeBuildInputs ++ [ prev.cmake ];
+            buildInputs = old.buildInputs ++ [ prev.scenefx ];
+          });
         };
       };
     };
