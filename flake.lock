@@ -203,22 +203,6 @@
         "type": "github"
       }
     },
-    "keepmenu": {
-      "flake": false,
-      "locked": {
-        "lastModified": 1720193052,
-        "narHash": "sha256-QufdabJX4ISUu+Pntj3sEp1jByRhozXUNTaIjTyXlQA=",
-        "owner": "percygt",
-        "repo": "keepmenu",
-        "rev": "6d41ce956a11259df935b34f82dc5b0c5e7fd2ea",
-        "type": "github"
-      },
-      "original": {
-        "owner": "percygt",
-        "repo": "keepmenu",
-        "type": "github"
-      }
-    },
     "neovim-nightly-overlay": {
       "inputs": {
         "flake-compat": "flake-compat",
@@ -292,31 +276,13 @@
         "type": "github"
       }
     },
-    "pykeepass": {
-      "flake": false,
-      "locked": {
-        "lastModified": 1722364710,
-        "narHash": "sha256-SYPYEE1e0sFMjaFcZpapHS0bDc+XfYeWWlQIZC8Aj2E=",
-        "owner": "libkeepass",
-        "repo": "pykeepass",
-        "rev": "321c653877f0d49c05e34a90a47b861a97b58446",
-        "type": "github"
-      },
-      "original": {
-        "owner": "libkeepass",
-        "repo": "pykeepass",
-        "type": "github"
-      }
-    },
     "root": {
       "inputs": {
         "emacs-overlay": "emacs-overlay",
         "foot": "foot",
-        "keepmenu": "keepmenu",
         "neovim-nightly-overlay": "neovim-nightly-overlay",
         "nixpkgs": "nixpkgs",
         "nixpkgs-stable": "nixpkgs-stable",
-        "pykeepass": "pykeepass",
         "scenefx": "scenefx",
         "swayfx-unwrapped": "swayfx-unwrapped"
       }
