@@ -292,6 +292,22 @@
         "type": "github"
       }
     },
+    "pykeepass": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1722364710,
+        "narHash": "sha256-SYPYEE1e0sFMjaFcZpapHS0bDc+XfYeWWlQIZC8Aj2E=",
+        "owner": "libkeepass",
+        "repo": "pykeepass",
+        "rev": "321c653877f0d49c05e34a90a47b861a97b58446",
+        "type": "github"
+      },
+      "original": {
+        "owner": "libkeepass",
+        "repo": "pykeepass",
+        "type": "github"
+      }
+    },
     "root": {
       "inputs": {
         "emacs-overlay": "emacs-overlay",
@@ -300,6 +316,7 @@
         "neovim-nightly-overlay": "neovim-nightly-overlay",
         "nixpkgs": "nixpkgs",
         "nixpkgs-stable": "nixpkgs-stable",
+        "pykeepass": "pykeepass",
         "scenefx": "scenefx",
         "swayfx-unwrapped": "swayfx-unwrapped"
       }

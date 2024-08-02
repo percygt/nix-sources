@@ -20,6 +20,10 @@
       url = "github:percygt/keepmenu";
       flake = false;
     };
+    pykeepass = {
+      url = "github:libkeepass/pykeepass";
+      flake = false;
+    };
 
     foot = {
       url = "git+https://codeberg.org/dnkl/foot";
@@ -70,9 +74,18 @@
       packages = forAllSystems (pkgs: {
         keepmenu = pkgs.callPackage (
           { keepmenu }:
-          keepmenu.overrideAttrs (_: {
-            src = inputs.keepmenu;
-          })
+          keepmenu.overrideAttrs (
+            _: prev: {
+              propagatedBuildInputs =
+                [ pkgs.python3Packages.pynput ]
+                ++ [
+                  (pkgs.python3Packages.pykeepass.overrideAttrs (_: {
+                    src = inputs.pykeepass;
+                  }))
+                ];
+              src = inputs.keepmenu;
+            }
+          )
         ) { };
         foot = pkgs.callPackage (
           { foot }:
