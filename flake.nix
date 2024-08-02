@@ -40,10 +40,7 @@
       inherit (self) outputs;
       systems = [
         "aarch64-linux"
-        "i686-linux"
         "x86_64-linux"
-        "aarch64-darwin"
-        "x86_64-darwin"
       ];
       forEachSystem = inputs.nixpkgs.lib.genAttrs systems;
       overlays = {
@@ -52,40 +49,50 @@
         neovim-nightly = inputs.neovim-nightly-overlay.overlays.default;
         scenefx = inputs.scenefx.overlays.insert;
       };
-      legacyPackages = forEachSystem (
-        system:
-        import inputs.nixpkgs {
-          inherit system;
-          overlays = builtins.attrValues overlays;
-          config.allowUnfree = true;
-        }
-      );
+      forAllSystems =
+        function:
+        forEachSystem (
+          system:
+          function (
+            import inputs.nixpkgs {
+              inherit system;
+              overlays = builtins.attrValues overlays;
+              config.allowUnfree = true;
+            }
+          )
+        );
     in
     {
-      packages = forEachSystem (
-        system:
-        let
-          pkgs = legacyPackages.${system};
-        in
-        {
-          emacs-unstable-pgtk = pkgs.callPackage (
-            { emacs-unstable-pgtk }: emacs-unstable-pgtk.override { withTreeSitter = true; }
-          ) { };
-          neovim-unstable = pkgs.callPackage ({ neovim }: neovim) { };
-        }
-      );
-      overlays = {
-        default = final: prev: {
-          inherit (outputs.packages.${prev.system}) emacs-unstable-pgtk neovim-unstable;
-          foot = prev.foot.overrideAttrs (_: {
+      packages = forAllSystems (pkgs: {
+        foot = pkgs.callPackage (
+          { foot }:
+          foot.overrideAttrs (_: {
             src = inputs.foot;
-          });
-          swayfx-unwrapped = prev.swayfx-unwrapped.overrideAttrs (old: {
+          })
+        ) { };
+        swayfx-unwrapped = pkgs.callPackage (
+          { swayfx-unwrapped }:
+          swayfx-unwrapped.overrideAttrs (old: {
             version = "0.4.0-git";
             src = inputs.swayfx-unwrapped;
-            nativeBuildInputs = old.nativeBuildInputs ++ [ prev.cmake ];
-            buildInputs = old.buildInputs ++ [ prev.scenefx ];
-          });
+            nativeBuildInputs = old.nativeBuildInputs ++ [ pkgs.cmake ];
+            buildInputs = old.buildInputs ++ [ pkgs.scenefx ];
+          })
+        ) { };
+        emacs-unstable-pgtk = pkgs.callPackage (
+          { emacs-unstable-pgtk }: emacs-unstable-pgtk.override { withTreeSitter = true; }
+        ) { };
+        neovim-unstable = pkgs.callPackage ({ neovim }: neovim) { };
+      });
+
+      overlays = {
+        default = final: prev: {
+          inherit (outputs.packages.${prev.system})
+            foot
+            swayfx-unwrapped
+            emacs-unstable-pgtk
+            neovim-unstable
+            ;
         };
       };
     };
