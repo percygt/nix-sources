@@ -16,6 +16,10 @@
       url = "github:WillPower3309/swayfx";
       flake = false;
     };
+    keepmenu = {
+      url = "github:percygt/keepmenu";
+      flake = false;
+    };
 
     foot = {
       url = "git+https://codeberg.org/dnkl/foot";
@@ -64,6 +68,12 @@
     in
     {
       packages = forAllSystems (pkgs: {
+        keepmenu = pkgs.callPackage (
+          { keepmenu }:
+          keepmenu.overrideAttrs (_: {
+            src = inputs.keepmenu;
+          })
+        ) { };
         foot = pkgs.callPackage (
           { foot }:
           foot.overrideAttrs (_: {
@@ -89,6 +99,7 @@
         default = final: prev: {
           inherit (outputs.packages.${prev.system})
             foot
+            keepmenu
             swayfx-unwrapped
             emacs-unstable-pgtk
             neovim-unstable
