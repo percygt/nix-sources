@@ -14,8 +14,12 @@
     scenefx.inputs.nixpkgs.follows = "nixpkgs";
     swayfx-unwrapped = {
       url = "github:WillPower3309/swayfx";
-      inputs.nixpkgs.follows = "nixpkgs";
-      inputs.scenefx.follows = "scenefx";
+      flake = false;
+    };
+
+    foot = {
+      url = "git+https://codeberg.org/dnkl/foot";
+      flake = false;
     };
 
     emacs-overlay = {
@@ -44,8 +48,9 @@
       forEachSystem = inputs.nixpkgs.lib.genAttrs systems;
       overlays = {
         emacs = inputs.emacs-overlay.overlay;
-        swayfx-unwrapped = inputs.swayfx-unwrapped.overlays.default;
+        # swayfx-unwrapped = inputs.swayfx-unwrapped.overlays.default;
         neovim-nightly = inputs.neovim-nightly-overlay.overlays.default;
+        scenefx = inputs.scenefx.overlays.insert;
       };
       legacyPackages = forEachSystem (
         system:
@@ -63,9 +68,15 @@
           pkgs = legacyPackages.${system};
         in
         {
-          swayfx-src = pkgs.callPackage (
-            { swayfx }: swayfx.override { inherit (pkgs) swayfx-unwrapped; }
-          ) { };
+          foot = pkgs.foot.overrideAttrs (_: {
+            src = inputs.foot;
+          });
+          swayfx-unwrapped = pkgs.swayfx-unwrapped.overrideAttrs (old: {
+            version = "0.4.0-git";
+            src = inputs.swayfx-unwrapped;
+            nativeBuildInputs = old.nativeBuildInputs ++ [ pkgs.cmake ];
+            buildInputs = old.buildInputs ++ [ pkgs.scenefx ];
+          });
           emacs-unstable-pgtk = pkgs.callPackage (
             { emacs-unstable-pgtk }: emacs-unstable-pgtk.override { withTreeSitter = true; }
           ) { };
@@ -74,7 +85,7 @@
       );
       overlays = {
         default = final: prev: {
-          inherit (outputs.packages.${prev.system}) swayfx-src emacs-unstable-pgtk neovim-unstable;
+          inherit (outputs.packages.${prev.system}) swayfx-unwrapped emacs-unstable-pgtk neovim-unstable;
         };
       };
     };

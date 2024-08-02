@@ -116,6 +116,22 @@
         "type": "github"
       }
     },
+    "foot": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1722602006,
+        "narHash": "sha256-afcW0GhCYC4zuOMg4//RpnLAnSeZkDs4ssKd676BBWk=",
+        "ref": "refs/heads/master",
+        "rev": "62b0b65d4712abd9ecd21ec2fe684c87a868bcc1",
+        "revCount": 6353,
+        "type": "git",
+        "url": "https://codeberg.org/dnkl/foot"
+      },
+      "original": {
+        "type": "git",
+        "url": "https://codeberg.org/dnkl/foot"
+      }
+    },
     "git-hooks": {
       "inputs": {
         "flake-compat": "flake-compat_2",
@@ -263,6 +279,7 @@
     "root": {
       "inputs": {
         "emacs-overlay": "emacs-overlay",
+        "foot": "foot",
         "neovim-nightly-overlay": "neovim-nightly-overlay",
         "nixpkgs": "nixpkgs",
         "nixpkgs-stable": "nixpkgs-stable",
@@ -291,14 +308,7 @@
       }
     },
     "swayfx-unwrapped": {
-      "inputs": {
-        "nixpkgs": [
-          "nixpkgs"
-        ],
-        "scenefx": [
-          "scenefx"
-        ]
-      },
+      "flake": false,
       "locked": {
         "lastModified": 1722269591,
         "narHash": "sha256-uqRVQmhtswgbM9bp4bIkQhS1J2fYqOuLo/Rt9ZpLT7I=",
