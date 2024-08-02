@@ -86,10 +86,7 @@
               src = inputs.keepmenu;
               postPatch = '''';
 
-              checkPhase = ''
-                runHook preCheck
-                runHook postCheck
-              '';
+              checkPhase = '''';
             }
           )
         ) { };
