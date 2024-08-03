@@ -30,7 +30,7 @@ jobs:
             changed:
               - 'flake.*'
 
-  archive:
+  build:
     needs: update
     if: ${{ needs.update.outputs.changed == 'true' }}
     runs-on: ubuntu-latest
@@ -45,26 +45,9 @@ jobs:
           name: percygtdev
       - name: Use cachix cache
         run: cachix use "$CACHIX_BINARY_CACHE"
-      - name: Archive flake inputs
+      - name: Update flake inputs
         run: |
-          nix flake archive --json \
-          | jq -r '.path,(.inputs|to_entries[].value.path)' \
-          | cachix push "$CACHIX_BINARY_CACHE"
-
-  build:
-    needs: archive
-    runs-on: ubuntu-latest
-    env:
-      CACHIX_BINARY_CACHE: percygtdev
-    steps:
-      - uses: actions/checkout@v4
-      - uses: determinatesystems/nix-installer-action@main
-      - uses: cachix/cachix-action@v14
-        with:
-          authToken: ${{ secrets.CACHIX_AUTH_TOKEN }}
-          name: percygtdev
-      - name: Use cachix cache
-        run: cachix use "$CACHIX_BINARY_CACHE"
+          nix flake update --accept-flake-config
       - name: Build packages
         run: |
           nix flake show --accept-flake-config --json \
