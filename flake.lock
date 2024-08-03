@@ -11,11 +11,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1722676249,
-        "narHash": "sha256-E8jHN1aWxNgR+NBCR6sfwKiT3RAigMxVH0vqyn6rEs0=",
+        "lastModified": 1722618700,
+        "narHash": "sha256-mZYSMqXrAN0gT6+WPh6X7IBd1sRjkVCai21TDbU51Zg=",
         "owner": "nix-community",
         "repo": "emacs-overlay",
-        "rev": "e67c0cec68f7df91c79ab06b97e2cc24023665cf",
+        "rev": "ccf777d7dcaf160ea3a6125e33ab281963173ce7",
         "type": "github"
       },
       "original": {
@@ -119,11 +119,11 @@
     "foot": {
       "flake": false,
       "locked": {
-        "lastModified": 1722678157,
-        "narHash": "sha256-Ib86204HllHUh8p8eYH1HdYtcf5V2iyYr4e0WkdT7YE=",
+        "lastModified": 1722602006,
+        "narHash": "sha256-afcW0GhCYC4zuOMg4//RpnLAnSeZkDs4ssKd676BBWk=",
         "ref": "refs/heads/master",
-        "rev": "b27841e1b590f91c9de21bb694909211421e5f96",
-        "revCount": 6356,
+        "rev": "62b0b65d4712abd9ecd21ec2fe684c87a868bcc1",
+        "revCount": 6353,
         "type": "git",
         "url": "https://codeberg.org/dnkl/foot"
       },
@@ -231,11 +231,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1722682023,
-        "narHash": "sha256-JKrHJEbszOZJvaiGqgcCfx6nqH9zEQBpjXp2SsXuYbA=",
+        "lastModified": 1722618800,
+        "narHash": "sha256-RP57a/NFk4uDnDWgTiDdJ+HteT8hTnkKz2dxd+kqL3M=",
         "owner": "nix-community",
         "repo": "neovim-nightly-overlay",
-        "rev": "1b9f21281243dd244641958887a685b15512a434",
+        "rev": "0dfaa8c68db4cd0e7c0f500242f24932b3abdb85",
         "type": "github"
       },
       "original": {
@@ -247,11 +247,11 @@
     "neovim-src": {
       "flake": false,
       "locked": {
-        "lastModified": 1722642172,
-        "narHash": "sha256-F8tpZK32Ipu0wWxyBFvBrNbVQoj9E9IXlyDNwrSn9PU=",
+        "lastModified": 1722556329,
+        "narHash": "sha256-biqiNshPEE3pndvrDQ2LqSe4YWi0PhHsAfhXGdoV+ic=",
         "owner": "neovim",
         "repo": "neovim",
-        "rev": "383f6934720a203d093c762cbd5362092110f35f",
+        "rev": "b782a37cf58b5ae5e47fd15fb2a5096639c64a23",
         "type": "github"
       },
       "original": {
@@ -262,16 +262,32 @@
     },
     "nixpkgs": {
       "locked": {
-        "lastModified": 1722640603,
-        "narHash": "sha256-TcXjLVNd3VeH1qKPH335Tc4RbFDbZQX+d7rqnDUoRaY=",
+        "lastModified": 1722415718,
+        "narHash": "sha256-5US0/pgxbMksF92k1+eOa8arJTJiPvsdZj9Dl+vJkM4=",
         "owner": "nixos",
         "repo": "nixpkgs",
-        "rev": "81610abc161d4021b29199aa464d6a1a521e0cc9",
+        "rev": "c3392ad349a5227f4a3464dce87bcc5046692fce",
         "type": "github"
       },
       "original": {
         "owner": "nixos",
         "ref": "nixpkgs-unstable",
+        "repo": "nixpkgs",
+        "type": "github"
+      }
+    },
+    "nixpkgs-master": {
+      "locked": {
+        "lastModified": 1722704515,
+        "narHash": "sha256-kk2VC7kxzO7owmfwgVIHV67jzJEnqDNjWlYVBEhJtdw=",
+        "owner": "nixos",
+        "repo": "nixpkgs",
+        "rev": "37648eae0c25ec6801bba0b30012fc18be539566",
+        "type": "github"
+      },
+      "original": {
+        "owner": "nixos",
+        "ref": "master",
         "repo": "nixpkgs",
         "type": "github"
       }
@@ -292,6 +308,22 @@
         "type": "github"
       }
     },
+    "pykeepass": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1722364710,
+        "narHash": "sha256-SYPYEE1e0sFMjaFcZpapHS0bDc+XfYeWWlQIZC8Aj2E=",
+        "owner": "libkeepass",
+        "repo": "pykeepass",
+        "rev": "321c653877f0d49c05e34a90a47b861a97b58446",
+        "type": "github"
+      },
+      "original": {
+        "owner": "libkeepass",
+        "repo": "pykeepass",
+        "type": "github"
+      }
+    },
     "root": {
       "inputs": {
         "emacs-overlay": "emacs-overlay",
@@ -299,7 +331,9 @@
         "keepmenu": "keepmenu",
         "neovim-nightly-overlay": "neovim-nightly-overlay",
         "nixpkgs": "nixpkgs",
+        "nixpkgs-master": "nixpkgs-master",
         "nixpkgs-stable": "nixpkgs-stable",
+        "pykeepass": "pykeepass",
         "scenefx": "scenefx",
         "swayfx-unwrapped": "swayfx-unwrapped"
       }

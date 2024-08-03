@@ -7,8 +7,9 @@
     ];
   };
   inputs = {
-    nixpkgs-stable.url = "github:nixos/nixpkgs/nixos-24.05";
     nixpkgs.url = "github:nixos/nixpkgs/nixpkgs-unstable";
+    nixpkgs-master.url = "github:nixos/nixpkgs/master";
+    nixpkgs-stable.url = "github:nixos/nixpkgs/nixos-24.05";
 
     scenefx.url = "github:wlrfx/scenefx";
     scenefx.inputs.nixpkgs.follows = "nixpkgs";
@@ -20,10 +21,10 @@
       url = "github:percygt/keepmenu";
       flake = false;
     };
-    # pykeepass = {
-    #   url = "github:libkeepass/pykeepass";
-    #   flake = false;
-    # };
+    pykeepass = {
+      url = "github:libkeepass/pykeepass";
+      flake = false;
+    };
 
     foot = {
       url = "git+https://codeberg.org/dnkl/foot";
@@ -57,33 +58,41 @@
         neovim-nightly = inputs.neovim-nightly-overlay.overlays.default;
         scenefx = inputs.scenefx.overlays.insert;
       };
-      forAllSystems =
-        function:
-        forEachSystem (
-          system:
-          function (
-            import inputs.nixpkgs {
-              inherit system;
-              overlays = builtins.attrValues overlays;
-              config.allowUnfree = true;
-            }
-          )
+      packagesFrom =
+        inputs-nixpkgs:
+        (
+          function:
+          (forEachSystem (
+            system:
+            function (
+              import inputs-nixpkgs {
+                inherit system;
+                overlays = builtins.attrValues overlays;
+                config.allowUnfree = true;
+              }
+            )
+          ))
         );
+      forAllSystems = packagesFrom inputs.nixpkgs;
     in
     {
       packages = forAllSystems (pkgs: {
         keepmenu = pkgs.callPackage (
-          { keepmenu, xsel }:
+          {
+            keepmenu,
+            xsel,
+            python3Packages,
+          }:
           keepmenu.overrideAttrs (
             _: prev: {
               nativeCheckInputs = prev.nativeCheckInputs ++ [ xsel ];
-              # propagatedBuildInputs =
-              #   [ pkgs.python3Packages.pynput ]
-              #   ++ [
-              #     (pkgs.python3Packages.pykeepass.overrideAttrs (_: {
-              #       src = inputs.pykeepass;
-              #     }))
-              #   ];
+              propagatedBuildInputs =
+                [ python3Packages.pynput ]
+                ++ [
+                  (python3Packages.pykeepass.overrideAttrs (_: {
+                    src = inputs.pykeepass;
+                  }))
+                ];
               src = inputs.keepmenu;
             }
           )
