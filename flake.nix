@@ -20,10 +20,10 @@
       url = "github:percygt/keepmenu";
       flake = false;
     };
-    pykeepass = {
-      url = "github:libkeepass/pykeepass";
-      flake = false;
-    };
+    # pykeepass = {
+    #   url = "github:libkeepass/pykeepass";
+    #   flake = false;
+    # };
 
     foot = {
       url = "git+https://codeberg.org/dnkl/foot";

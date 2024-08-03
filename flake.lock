@@ -203,6 +203,22 @@
         "type": "github"
       }
     },
+    "keepmenu": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1720193052,
+        "narHash": "sha256-QufdabJX4ISUu+Pntj3sEp1jByRhozXUNTaIjTyXlQA=",
+        "owner": "percygt",
+        "repo": "keepmenu",
+        "rev": "6d41ce956a11259df935b34f82dc5b0c5e7fd2ea",
+        "type": "github"
+      },
+      "original": {
+        "owner": "percygt",
+        "repo": "keepmenu",
+        "type": "github"
+      }
+    },
     "neovim-nightly-overlay": {
       "inputs": {
         "flake-compat": "flake-compat",
@@ -280,6 +296,7 @@
       "inputs": {
         "emacs-overlay": "emacs-overlay",
         "foot": "foot",
+        "keepmenu": "keepmenu",
         "neovim-nightly-overlay": "neovim-nightly-overlay",
         "nixpkgs": "nixpkgs",
         "nixpkgs-stable": "nixpkgs-stable",
