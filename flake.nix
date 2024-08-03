@@ -80,12 +80,20 @@
         keepmenu = pkgs.callPackage (
           {
             keepmenu,
+            xdotool,
             xsel,
+            dmenu,
+            xvfb-run,
             python3Packages,
           }:
           keepmenu.overrideAttrs (
             _: prev: {
-              nativeCheckInputs = prev.nativeCheckInputs ++ [ xsel ];
+              nativeCheckInputs = [
+                dmenu
+                xdotool
+                xsel
+                xvfb-run
+              ];
               propagatedBuildInputs =
                 [ python3Packages.pynput ]
                 ++ [
