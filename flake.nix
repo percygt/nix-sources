@@ -21,6 +21,7 @@
       url = "github:percygt/keepmenu";
       flake = false;
     };
+
     pykeepass = {
       url = "github:libkeepass/pykeepass";
       flake = false;
@@ -78,22 +79,10 @@
     {
       packages = forAllSystems (pkgs: {
         keepmenu = pkgs.callPackage (
-          {
-            keepmenu,
-            xdotool,
-            xsel,
-            dmenu,
-            xvfb-run,
-            python3Packages,
-          }:
+          { keepmenu, python3Packages }:
           keepmenu.overrideAttrs (
             _: prev: {
-              nativeCheckInputs = [
-                dmenu
-                xdotool
-                xsel
-                xvfb-run
-              ];
+              installCheckPhase = ''true''; # TODO: Remove once https://github.com/NixOS/nixpkgs/pull/328672 is merged
               propagatedBuildInputs =
                 [ python3Packages.pynput ]
                 ++ [
