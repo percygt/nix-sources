@@ -16,14 +16,14 @@
       url = "github:WillPower3309/swayfx";
       flake = false;
     };
-    # keepmenu = {
-    #   url = "github:percygt/keepmenu";
-    #   flake = false;
-    # };
-    # pykeepass = {
-    #   url = "github:libkeepass/pykeepass";
-    #   flake = false;
-    # };
+    keepmenu = {
+      url = "github:percygt/keepmenu";
+      flake = false;
+    };
+    pykeepass = {
+      url = "github:libkeepass/pykeepass";
+      flake = false;
+    };
 
     foot = {
       url = "git+https://codeberg.org/dnkl/foot";
@@ -72,24 +72,22 @@
     in
     {
       packages = forAllSystems (pkgs: {
-        # keepmenu = pkgs.callPackage (
-        #   { keepmenu }:
-        #   keepmenu.overrideAttrs (
-        #     _: prev: {
-        #       propagatedBuildInputs =
-        #         [ pkgs.python3Packages.pynput ]
-        #         ++ [
-        #           (pkgs.python3Packages.pykeepass.overrideAttrs (_: {
-        #             src = inputs.pykeepass;
-        #           }))
-        #         ];
-        #       src = inputs.keepmenu;
-        #       postPatch = '''';
-        #
-        #       checkPhase = '''';
-        #     }
-        #   )
-        # ) { };
+        keepmenu = pkgs.callPackage (
+          { keepmenu, xsel }:
+          keepmenu.overrideAttrs (
+            _: prev: {
+              nativeCheckInputs = prev.nativeCheckInputs ++ [ xsel ];
+              # propagatedBuildInputs =
+              #   [ pkgs.python3Packages.pynput ]
+              #   ++ [
+              #     (pkgs.python3Packages.pykeepass.overrideAttrs (_: {
+              #       src = inputs.pykeepass;
+              #     }))
+              #   ];
+              src = inputs.keepmenu;
+            }
+          )
+        ) { };
         foot = pkgs.callPackage (
           { foot }:
           foot.overrideAttrs (_: {
