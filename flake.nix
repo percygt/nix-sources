@@ -75,50 +75,45 @@
           ))
         );
       forAllSystems = packagesFrom inputs.nixpkgs;
-      forAllSystemsMaster = packagesFrom inputs.nixpkgs-master;
-      forAllSystemsStable = packagesFrom inputs.nixpkgs-stable;
     in
     {
-      packages =
-        (forAllSystems (pkgs: {
-          keepmenu = pkgs.callPackage (
-            { keepmenu, python3Packages }:
-            keepmenu.overrideAttrs (
-              _: prev: {
-                installCheckPhase = ''true''; # TODO: Remove once https://github.com/NixOS/nixpkgs/pull/328672 is merged
-                propagatedBuildInputs =
-                  [ python3Packages.pynput ]
-                  ++ [
-                    (python3Packages.pykeepass.overrideAttrs (_: {
-                      src = inputs.pykeepass;
-                    }))
-                  ];
-                src = inputs.keepmenu;
-              }
-            )
-          ) { };
-          foot = pkgs.callPackage (
-            { foot }:
-            foot.overrideAttrs (_: {
-              src = inputs.foot;
-            })
-          ) { };
-          swayfx-unwrapped = pkgs.callPackage (
-            { swayfx-unwrapped }:
-            swayfx-unwrapped.overrideAttrs (old: {
-              version = "0.4.0-git";
-              src = inputs.swayfx-unwrapped;
-              nativeBuildInputs = old.nativeBuildInputs ++ [ pkgs.cmake ];
-              buildInputs = old.buildInputs ++ [ pkgs.scenefx ];
-            })
-          ) { };
-          emacs-unstable = pkgs.callPackage (
-            { emacs-unstable }: emacs-unstable.override { withTreeSitter = true; }
-          ) { };
-          neovim-unstable = pkgs.callPackage ({ neovim }: neovim) { };
-        }))
-        // (forAllSystemsMaster (pkgs: { }))
-        // (forAllSystemsStable (pkgs: { }));
+      packages = forAllSystems (pkgs: {
+        keepmenu = pkgs.callPackage (
+          { keepmenu, python3Packages }:
+          keepmenu.overrideAttrs (
+            _: prev: {
+              installCheckPhase = ''true''; # TODO: Remove once https://github.com/NixOS/nixpkgs/pull/328672 is merged
+              propagatedBuildInputs =
+                [ python3Packages.pynput ]
+                ++ [
+                  (python3Packages.pykeepass.overrideAttrs (_: {
+                    src = inputs.pykeepass;
+                  }))
+                ];
+              src = inputs.keepmenu;
+            }
+          )
+        ) { };
+        foot = pkgs.callPackage (
+          { foot }:
+          foot.overrideAttrs (_: {
+            src = inputs.foot;
+          })
+        ) { };
+        swayfx-unwrapped = pkgs.callPackage (
+          { swayfx-unwrapped }:
+          swayfx-unwrapped.overrideAttrs (old: {
+            version = "0.4.0-git";
+            src = inputs.swayfx-unwrapped;
+            nativeBuildInputs = old.nativeBuildInputs ++ [ pkgs.cmake ];
+            buildInputs = old.buildInputs ++ [ pkgs.scenefx ];
+          })
+        ) { };
+        emacs-unstable = pkgs.callPackage (
+          { emacs-unstable }: emacs-unstable.override { withTreeSitter = true; }
+        ) { };
+        neovim-unstable = pkgs.callPackage ({ neovim }: neovim) { };
+      });
 
       overlays = {
         default = final: prev: {
