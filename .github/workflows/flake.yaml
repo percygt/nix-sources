@@ -5,6 +5,7 @@ name: Test and cache flake packages
   push:
   pull_request:
   schedule:
+    # 12:00AM PHT Sun,Wed
     - cron: 0 16 * * 6,2
   workflow_dispatch:
 
