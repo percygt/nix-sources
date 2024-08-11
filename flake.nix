@@ -112,6 +112,9 @@
         emacs-unstable = pkgs.callPackage (
           { emacs-unstable }: emacs-unstable.override { withTreeSitter = true; }
         ) { };
+        emacs-unstable-pgtk = pkgs.callPackage (
+          { emacs-unstable-pgtk }: emacs-unstable-pgtk.override { withTreeSitter = true; }
+        ) { };
         neovim-unstable = pkgs.callPackage ({ neovim }: neovim) { };
       });
 
@@ -122,6 +125,7 @@
             keepmenu
             swayfx-unwrapped
             emacs-unstable
+            emacs-unstable-pgtk
             neovim-unstable
             ;
         };
