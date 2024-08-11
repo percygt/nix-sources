@@ -121,7 +121,7 @@
             foot
             keepmenu
             swayfx-unwrapped
-            emacs-unstable-pgtk
+            emacs-unstable
             neovim-unstable
             ;
         };
