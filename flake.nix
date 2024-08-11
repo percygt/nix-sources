@@ -109,7 +109,9 @@
             buildInputs = old.buildInputs ++ [ pkgs.scenefx ];
           })
         ) { };
-        emacs-pgtk = pkgs.callPackage ({ emacs-pgtk }: emacs-pgtk.override { withTreeSitter = true; }) { };
+        emacs-unstable = pkgs.callPackage (
+          { emacs-unstable }: emacs-unstable.override { withTreeSitter = true; }
+        ) { };
         neovim-unstable = pkgs.callPackage ({ neovim }: neovim) { };
       });
 
