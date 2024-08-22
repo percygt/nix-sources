@@ -17,6 +17,10 @@
       url = "github:WillPower3309/swayfx";
       flake = false;
     };
+
+    firefox-nightly.url = "github:nix-community/flake-firefox-nightly";
+    firefox-nightly.inputs.nixpkgs.follows = "nixpkgs";
+
     keepmenu = {
       url = "github:percygt/keepmenu";
       flake = false;
@@ -78,6 +82,7 @@
     in
     {
       packages = forAllSystems (pkgs: {
+        firefox-nightly = inputs.firefox-nightly.packages.${pkgs.system}.firefox-nightly-bin;
         keepmenu = pkgs.callPackage (
           { keepmenu, python3Packages }:
           keepmenu.overrideAttrs (
@@ -122,6 +127,7 @@
         default = final: prev: {
           inherit (outputs.packages.${prev.system})
             foot
+            firefox-nightly
             keepmenu
             swayfx-unwrapped
             emacs-unstable
