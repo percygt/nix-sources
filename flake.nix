@@ -21,6 +21,9 @@
     firefox-nightly.url = "github:nix-community/flake-firefox-nightly";
     firefox-nightly.inputs.nixpkgs.follows = "nixpkgs";
 
+    zen-browser.url = "github:MarceColl/zen-browser-flake";
+    zen-browser.inputs.nixpkgs.follows = "nixpkgs";
+
     keepmenu = {
       url = "github:percygt/keepmenu";
       flake = false;
@@ -83,6 +86,7 @@
     {
       packages = forAllSystems (pkgs: {
         firefox-nightly = inputs.firefox-nightly.packages.${pkgs.system}.firefox-nightly-bin;
+        zen-browser = inputs.zen-browser.packages."${pkgs.system}".default;
         keepmenu = pkgs.callPackage (
           { keepmenu, python3Packages }:
           keepmenu.overrideAttrs (
@@ -128,6 +132,7 @@
           inherit (outputs.packages.${prev.system})
             foot
             firefox-nightly
+            zen-browser
             keepmenu
             swayfx-unwrapped
             emacs-unstable
