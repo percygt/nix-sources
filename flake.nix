@@ -17,8 +17,8 @@
     #   url = "github:WillPower3309/swayfx";
     #   flake = false;
     # };
-    swayfx-unwrapped.url = "github:WillPower3309/swayfx";
-    swayfx-unwrapped.inputs.nixpkgs.follows = "nixpkgs";
+    # swayfx-unwrapped.url = "github:WillPower3309/swayfx";
+    # swayfx-unwrapped.inputs.nixpkgs.follows = "nixpkgs";
 
     firefox-nightly.url = "github:nix-community/flake-firefox-nightly";
     firefox-nightly.inputs.nixpkgs.follows = "nixpkgs";
@@ -123,12 +123,12 @@
         emacs-unstable = pkgs.callPackage (
           { emacs-unstable }: emacs-unstable.override { withTreeSitter = true; }
         ) { };
-        swayfx = pkgs.callPackage (
-          { swayfx }:
-          swayfx.override {
-            inherit (inputs.swayfx-unwrapped.packages.${pkgs.system}) swayfx-unwrapped;
-          }
-        ) { };
+        # swayfx = pkgs.callPackage (
+        #   { swayfx }:
+        #   swayfx.override {
+        #     inherit (inputs.swayfx-unwrapped.packages.${pkgs.system}) swayfx-unwrapped;
+        #   }
+        # ) { };
         emacs-unstable-pgtk = pkgs.callPackage (
           { emacs-unstable-pgtk }: emacs-unstable-pgtk.override { withTreeSitter = true; }
         ) { };
@@ -139,7 +139,7 @@
         default = final: prev: {
           inherit (outputs.packages.${prev.system})
             foot
-            swayfx
+            # swayfx
             firefox-nightly
             zen-browser
             keepmenu
