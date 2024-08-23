@@ -11,12 +11,14 @@
     nixpkgs-master.url = "github:nixos/nixpkgs/master";
     nixpkgs-stable.url = "github:nixos/nixpkgs/nixos-24.05";
 
-    scenefx.url = "github:wlrfx/scenefx";
-    scenefx.inputs.nixpkgs.follows = "nixpkgs";
-    swayfx-unwrapped = {
-      url = "github:WillPower3309/swayfx";
-      flake = false;
-    };
+    # scenefx.url = "github:wlrfx/scenefx";
+    # scenefx.inputs.nixpkgs.follows = "nixpkgs";
+    # swayfx-unwrapped = {
+    #   url = "github:WillPower3309/swayfx";
+    #   flake = false;
+    # };
+    swayfx-unwrapped.url = "github:WillPower3309/swayfx";
+    swayfx-unwrapped.inputs.nixpkgs.follows = "nixpkgs";
 
     firefox-nightly.url = "github:nix-community/flake-firefox-nightly";
     firefox-nightly.inputs.nixpkgs.follows = "nixpkgs";
@@ -64,7 +66,7 @@
         emacs = inputs.emacs-overlay.overlay;
         # swayfx-unwrapped = inputs.swayfx-unwrapped.overlays.default;
         neovim-nightly = inputs.neovim-nightly-overlay.overlays.default;
-        scenefx = inputs.scenefx.overlays.insert;
+        # scenefx = inputs.scenefx.overlays.insert;
       };
       packagesFrom =
         inputs-nixpkgs:
@@ -109,17 +111,23 @@
             src = inputs.foot;
           })
         ) { };
-        swayfx-unwrapped = pkgs.callPackage (
-          { swayfx-unwrapped }:
-          swayfx-unwrapped.overrideAttrs (old: {
-            version = "0.4.0-git";
-            src = inputs.swayfx-unwrapped;
-            nativeBuildInputs = old.nativeBuildInputs ++ [ pkgs.cmake ];
-            buildInputs = old.buildInputs ++ [ pkgs.scenefx ];
-          })
-        ) { };
+        # swayfx-unwrapped = pkgs.callPackage (
+        #   { swayfx-unwrapped }:
+        #   swayfx-unwrapped.overrideAttrs (old: {
+        #     version = "0.4.0-git";
+        #     src = inputs.swayfx-unwrapped;
+        #     nativeBuildInputs = old.nativeBuildInputs ++ [ pkgs.cmake ];
+        #     buildInputs = old.buildInputs ++ [ pkgs.scenefx ];
+        #   })
+        # ) { };
         emacs-unstable = pkgs.callPackage (
           { emacs-unstable }: emacs-unstable.override { withTreeSitter = true; }
+        ) { };
+        swayfx = pkgs.callPackage (
+          { swayfx }:
+          swayfx.override {
+            inherit (inputs.swayfx-unwrapped.packages.${pkgs.system}) swayfx-unwrapped;
+          }
         ) { };
         emacs-unstable-pgtk = pkgs.callPackage (
           { emacs-unstable-pgtk }: emacs-unstable-pgtk.override { withTreeSitter = true; }
@@ -131,6 +139,7 @@
         default = final: prev: {
           inherit (outputs.packages.${prev.system})
             foot
+            swayfx
             firefox-nightly
             zen-browser
             keepmenu
