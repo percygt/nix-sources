@@ -143,7 +143,7 @@
             firefox-nightly
             zen-browser
             keepmenu
-            swayfx-unwrapped
+            # swayfx-unwrapped
             emacs-unstable
             emacs-unstable-pgtk
             neovim-unstable
