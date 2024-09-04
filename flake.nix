@@ -16,6 +16,10 @@
     swayfx-unwrapped.url = "github:WillPower3309/swayfx";
     swayfx-unwrapped.inputs.nixpkgs.follows = "nixpkgs";
     swayfx-unwrapped.inputs.scenefx.follows = "scenefx";
+    # swayfx-unwrapped = {
+    #   url = "github:WillPower3309/swayfx";
+    #   flake = false;
+    # };
 
     firefox-nightly.url = "github:nix-community/flake-firefox-nightly";
     firefox-nightly.inputs.nixpkgs.follows = "nixpkgs";
@@ -61,7 +65,8 @@
       forEachSystem = inputs.nixpkgs.lib.genAttrs systems;
       overlays = {
         emacs = inputs.emacs-overlay.overlay;
-        swayfx-unwrapped = inputs.swayfx-unwrapped.overlays.default;
+        # swayfx-unwrapped = inputs.swayfx-unwrapped.overlays.default;
+        scenefx = inputs.scenefx.overlays.insert;
         neovim-nightly = inputs.neovim-nightly-overlay.overlays.default;
       };
       packagesFrom =
@@ -114,9 +119,35 @@
         swayfx-git = pkgs.callPackage (
           { swayfx }:
           swayfx.override {
-            inherit (inputs.swayfx-unwrapped.packages.${pkgs.system}) swayfx-unwrapped;
+            swayfx-unwrapped =
+              (inputs.swayfx-unwrapped.packages.${pkgs.system}.swayfx-unwrapped).overrideAttrs
+                (oldSwayFxAttrs: {
+                  buildInputs = oldSwayFxAttrs.buildInputs ++ [
+                    (pkgs.scenefx.overrideAttrs (oldSceneFxAttrs: {
+                      #TODO : Remove once https://github.com/NixOS/nixpkgs/issues/338792 is merged
+                      depsBuildBuild = [ pkgs.pkg-config ];
+                      nativeBuildInputs = oldSceneFxAttrs.nativeBuildInputs ++ [ pkgs.wayland-scanner ];
+                    }))
+                  ];
+                });
           }
         ) { };
+        # nativeBuildInputs = old.nativeBuildInputs ++ [ pkgs.cmake ];
+        # buildInputs = old.buildInputs ++ [
+        #   (pkgs.scenefx.overrideAttrs (oldAttrs: {
+        #     depsBuildBuild = [ pkgs.pkg-config ];
+        #     nativeBuildInputs = oldAttrs.nativeBuildInputs ++ [ pkgs.wayland-scanner ];
+        #   }))
+        # ];
+        # swayfx-git = pkgs.callPackage (
+        #   { swayfx-unwrapped }:
+        #   swayfx-unwrapped.overrideAttrs (old: {
+        #     version = "0.4.0-git";
+        #     src = inputs.swayfx-unwrapped;
+        #     nativeBuildInputs = old.nativeBuildInputs ++ [ pkgs.cmake ];
+        #     buildInputs = old.buildInputs ++ [ pkgs.scenefx ];
+        #   })
+        # ) { };
         emacs-unstable-pgtk = pkgs.callPackage (
           { emacs-unstable-pgtk }: emacs-unstable-pgtk.override { withTreeSitter = true; }
         ) { };
