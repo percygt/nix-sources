@@ -82,6 +82,7 @@
       forAllSystems = packagesFrom inputs.nixpkgs;
     in
     {
+      formatter = forAllSystems (pkgs: pkgs.nixfmt-rfc-style);
       packages = forAllSystems (pkgs: {
         firefox-nightly = inputs.firefox-nightly.packages.${pkgs.system}.firefox-nightly-bin;
         zen-browser = inputs.zen-browser.packages."${pkgs.system}".default;
