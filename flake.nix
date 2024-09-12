@@ -11,11 +11,11 @@
     nixpkgs-master.url = "github:nixos/nixpkgs/master";
     nixpkgs-stable.url = "github:nixos/nixpkgs/nixos-24.05";
 
-    scenefx.url = "github:wlrfx/scenefx";
-    scenefx.inputs.nixpkgs.follows = "nixpkgs";
+    # scenefx.url = "github:wlrfx/scenefx";
+    # scenefx.inputs.nixpkgs.follows = "nixpkgs";
     swayfx-unwrapped.url = "github:WillPower3309/swayfx";
-    swayfx-unwrapped.inputs.nixpkgs.follows = "nixpkgs";
-    swayfx-unwrapped.inputs.scenefx.follows = "scenefx";
+    # swayfx-unwrapped.inputs.nixpkgs.follows = "nixpkgs";
+    # swayfx-unwrapped.inputs.scenefx.follows = "scenefx";
     # swayfx-unwrapped = {
     #   url = "github:WillPower3309/swayfx";
     #   flake = false;
@@ -44,10 +44,10 @@
 
     emacs-overlay = {
       url = "github:nix-community/emacs-overlay";
-      inputs = {
-        nixpkgs.follows = "nixpkgs";
-        nixpkgs-stable.follows = "nixpkgs-stable";
-      };
+      # inputs = {
+      #   nixpkgs.follows = "nixpkgs";
+      #   nixpkgs-stable.follows = "nixpkgs-stable";
+      # };
     };
     neovim-nightly-overlay = {
       url = "github:nix-community/neovim-nightly-overlay";
@@ -64,9 +64,9 @@
       ];
       forEachSystem = inputs.nixpkgs.lib.genAttrs systems;
       overlays = {
-        emacs = inputs.emacs-overlay.overlay;
+        emacs = inputs.emacs-overlay.overlays.default;
         # swayfx-unwrapped = inputs.swayfx-unwrapped.overlays.default;
-        scenefx = inputs.scenefx.overlays.insert;
+        # scenefx = inputs.scenefx.overlays.insert;
         neovim-nightly = inputs.neovim-nightly-overlay.overlays.default;
       };
       packagesFrom =
@@ -114,22 +114,27 @@
           })
         ) { };
         emacs-unstable = pkgs.callPackage (
-          { emacs-unstable }: emacs-unstable.override { withTreeSitter = true; }
+          { emacs-unstable }:
+          emacs-unstable.override {
+            withTreeSitter = true;
+          }
+        ) { };
+        emacs-pgtk = pkgs.callPackage (
+          { emacs-unstable-pgtk }:
+          emacs-unstable-pgtk.override {
+            withTreeSitter = true;
+          }
+        ) { };
+        emacs-unstable-pgtk = pkgs.callPackage (
+          { emacs-unstable-pgtk }:
+          emacs-unstable-pgtk.override {
+            withTreeSitter = true;
+          }
         ) { };
         swayfx-git = pkgs.callPackage (
           { swayfx }:
           swayfx.override {
-            swayfx-unwrapped =
-              (inputs.swayfx-unwrapped.packages.${pkgs.system}.swayfx-unwrapped).overrideAttrs
-                (oldSwayFxAttrs: {
-                  buildInputs = oldSwayFxAttrs.buildInputs ++ [
-                    (pkgs.scenefx.overrideAttrs (oldSceneFxAttrs: {
-                      #TODO : Remove once https://github.com/NixOS/nixpkgs/issues/338792 is merged
-                      depsBuildBuild = [ pkgs.pkg-config ];
-                      nativeBuildInputs = oldSceneFxAttrs.nativeBuildInputs ++ [ pkgs.wayland-scanner ];
-                    }))
-                  ];
-                });
+            swayfx-unwrapped = inputs.swayfx-unwrapped.packages.${pkgs.system}.swayfx-unwrapped;
           }
         ) { };
         # nativeBuildInputs = old.nativeBuildInputs ++ [ pkgs.cmake ];
@@ -148,9 +153,6 @@
         #     buildInputs = old.buildInputs ++ [ pkgs.scenefx ];
         #   })
         # ) { };
-        emacs-unstable-pgtk = pkgs.callPackage (
-          { emacs-unstable-pgtk }: emacs-unstable-pgtk.override { withTreeSitter = true; }
-        ) { };
         neovim-unstable = pkgs.callPackage ({ neovim }: neovim) { };
       });
 
@@ -163,6 +165,7 @@
             keepmenu
             swayfx-git
             emacs-unstable
+            emacs-pgtk
             emacs-unstable-pgtk
             neovim-unstable
             ;
