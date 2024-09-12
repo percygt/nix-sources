@@ -11,11 +11,11 @@
     nixpkgs-master.url = "github:nixos/nixpkgs/master";
     nixpkgs-stable.url = "github:nixos/nixpkgs/nixos-24.05";
 
-    # scenefx.url = "github:wlrfx/scenefx";
-    # scenefx.inputs.nixpkgs.follows = "nixpkgs";
+    scenefx.url = "github:wlrfx/scenefx";
+    scenefx.inputs.nixpkgs.follows = "nixpkgs";
     swayfx-unwrapped.url = "github:WillPower3309/swayfx";
-    # swayfx-unwrapped.inputs.nixpkgs.follows = "nixpkgs";
-    # swayfx-unwrapped.inputs.scenefx.follows = "scenefx";
+    swayfx-unwrapped.inputs.nixpkgs.follows = "nixpkgs";
+    swayfx-unwrapped.inputs.scenefx.follows = "scenefx";
     # swayfx-unwrapped = {
     #   url = "github:WillPower3309/swayfx";
     #   flake = false;
@@ -44,10 +44,10 @@
 
     emacs-overlay = {
       url = "github:nix-community/emacs-overlay";
-      # inputs = {
-      #   nixpkgs.follows = "nixpkgs";
-      #   nixpkgs-stable.follows = "nixpkgs-stable";
-      # };
+      inputs = {
+        nixpkgs.follows = "nixpkgs";
+        nixpkgs-stable.follows = "nixpkgs-stable";
+      };
     };
     neovim-nightly-overlay = {
       url = "github:nix-community/neovim-nightly-overlay";
@@ -119,12 +119,12 @@
             withTreeSitter = true;
           }
         ) { };
-        emacs-pgtk = pkgs.callPackage (
-          { emacs-unstable-pgtk }:
-          emacs-unstable-pgtk.override {
-            withTreeSitter = true;
-          }
-        ) { };
+        # emacs-pgtk = pkgs.callPackage (
+        #   { emacs-unstable-pgtk }:
+        #   emacs-unstable-pgtk.override {
+        #     withTreeSitter = true;
+        #   }
+        # ) { };
         emacs-unstable-pgtk = pkgs.callPackage (
           { emacs-unstable-pgtk }:
           emacs-unstable-pgtk.override {
