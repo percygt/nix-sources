@@ -11,11 +11,8 @@
     nixpkgs-master.url = "github:nixos/nixpkgs/master";
     nixpkgs-stable.url = "github:nixos/nixpkgs/nixos-24.05";
 
-    scenefx.url = "github:wlrfx/scenefx";
-    scenefx.inputs.nixpkgs.follows = "nixpkgs";
     swayfx-unwrapped.url = "github:WillPower3309/swayfx";
     swayfx-unwrapped.inputs.nixpkgs.follows = "nixpkgs";
-    swayfx-unwrapped.inputs.scenefx.follows = "scenefx";
     # swayfx-unwrapped = {
     #   url = "github:WillPower3309/swayfx";
     #   flake = false;
@@ -89,7 +86,6 @@
     {
       formatter = forAllSystems (pkgs: pkgs.nixfmt-rfc-style);
       packages = forAllSystems (pkgs: {
-        firefox-nightly = inputs.firefox-nightly.packages.${pkgs.system}.firefox-nightly-bin;
         zen-browser = inputs.zen-browser.packages."${pkgs.system}".default;
         keepmenu = pkgs.callPackage (
           { keepmenu, python3Packages }:
@@ -137,13 +133,6 @@
             swayfx-unwrapped = inputs.swayfx-unwrapped.packages.${pkgs.system}.swayfx-unwrapped;
           }
         ) { };
-        # nativeBuildInputs = old.nativeBuildInputs ++ [ pkgs.cmake ];
-        # buildInputs = old.buildInputs ++ [
-        #   (pkgs.scenefx.overrideAttrs (oldAttrs: {
-        #     depsBuildBuild = [ pkgs.pkg-config ];
-        #     nativeBuildInputs = oldAttrs.nativeBuildInputs ++ [ pkgs.wayland-scanner ];
-        #   }))
-        # ];
         # swayfx-git = pkgs.callPackage (
         #   { swayfx-unwrapped }:
         #   swayfx-unwrapped.overrideAttrs (old: {
@@ -160,7 +149,6 @@
         default = final: prev: {
           inherit (outputs.packages.${prev.system})
             foot
-            firefox-nightly
             zen-browser
             keepmenu
             swayfx-git
