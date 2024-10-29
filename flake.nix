@@ -18,9 +18,6 @@
     #   flake = false;
     # };
 
-    firefox-nightly.url = "github:nix-community/flake-firefox-nightly";
-    firefox-nightly.inputs.nixpkgs.follows = "nixpkgs";
-
     zen-browser.url = "github:MarceColl/zen-browser-flake";
     zen-browser.inputs.nixpkgs.follows = "nixpkgs";
 
@@ -59,7 +56,8 @@
         "aarch64-linux"
         "x86_64-linux"
       ];
-      forEachSystem = inputs.nixpkgs.lib.genAttrs systems;
+      lib = inputs.nixpkgs.lib;
+      forEachSystem = lib.genAttrs systems;
       overlays = {
         emacs = inputs.emacs-overlay.overlays.default;
         # swayfx-unwrapped = inputs.swayfx-unwrapped.overlays.default;
@@ -149,6 +147,7 @@
         default = final: prev: {
           inherit (outputs.packages.${prev.system})
             foot
+            clipmon
             zen-browser
             keepmenu
             swayfx-git
