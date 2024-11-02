@@ -37,12 +37,13 @@
     };
 
     emacs-overlay = {
-      url = "github:nix-community/emacs-overlay";
+      url = "github:nix-community/emacs-overlay/";
       inputs = {
         nixpkgs.follows = "nixpkgs";
         nixpkgs-stable.follows = "nixpkgs-stable";
       };
     };
+
     neovim-nightly-overlay = {
       url = "github:nix-community/neovim-nightly-overlay";
       inputs.nixpkgs.follows = "nixpkgs";
@@ -101,12 +102,12 @@
             }
           )
         ) { };
-        foot = pkgs.callPackage (
-          { foot }:
-          foot.overrideAttrs (_: {
-            src = inputs.foot;
-          })
-        ) { };
+        # foot-git = pkgs.callPackage (
+        #   { foot }:
+        #   foot.overrideAttrs (_: {
+        #     src = inputs.foot;
+        #   })
+        # ) { };
         emacs-unstable = pkgs.callPackage (
           { emacs-unstable }:
           emacs-unstable.override {
