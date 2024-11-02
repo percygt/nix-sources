@@ -147,7 +147,7 @@
       overlays = {
         default = final: prev: {
           inherit (outputs.packages.${prev.system})
-            foot
+            # foot
             clipmon
             zen-browser
             keepmenu
