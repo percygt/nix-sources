@@ -48,6 +48,10 @@
       url = "github:nix-community/neovim-nightly-overlay";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+    nix-your-shell = {
+      url = "github:MercuryTechnologies/nix-your-shell";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
   };
   outputs =
     { self, ... }@inputs:
@@ -63,6 +67,7 @@
         emacs = inputs.emacs-overlay.overlays.default;
         # swayfx-unwrapped = inputs.swayfx-unwrapped.overlays.default;
         # scenefx = inputs.scenefx.overlays.insert;
+        nix-your-shell = inputs.nix-your-shell.overlays.default;
         neovim-nightly = inputs.neovim-nightly-overlay.overlays.default;
       };
       packagesFrom =
@@ -142,6 +147,7 @@
         #   })
         # ) { };
         neovim-unstable = pkgs.callPackage ({ neovim }: neovim) { };
+        nix-your-shell = pkgs.callPackage ({ nix-your-shell }: nix-your-shell) { };
       });
 
       overlays = {
@@ -156,6 +162,7 @@
             emacs-pgtk
             emacs-unstable-pgtk
             neovim-unstable
+            nix-your-shell
             ;
         };
       };
