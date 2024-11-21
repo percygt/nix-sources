@@ -61,7 +61,7 @@
         "aarch64-linux"
         "x86_64-linux"
       ];
-      lib = inputs.nixpkgs.lib;
+      inherit (inputs.nixpkgs) lib;
       forEachSystem = lib.genAttrs systems;
       overlays = {
         emacs = inputs.emacs-overlay.overlays.default;
@@ -134,7 +134,7 @@
         swayfx-git = pkgs.callPackage (
           { swayfx }:
           swayfx.override {
-            swayfx-unwrapped = inputs.swayfx-unwrapped.packages.${pkgs.system}.swayfx-unwrapped;
+            inherit (inputs.swayfx-unwrapped.packages.${pkgs.system}) swayfx-unwrapped;
           }
         ) { };
         # swayfx-git = pkgs.callPackage (
