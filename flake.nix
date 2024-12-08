@@ -65,7 +65,6 @@
     {
       formatter = forAllSystems (pkgs: pkgs.nixfmt-rfc-style);
       packages = forAllSystems (pkgs: {
-        zen-browser = inputs.zen-browser.packages."${pkgs.system}".default;
         emacs-unstable = pkgs.callPackage (
           { emacs-unstable }:
           emacs-unstable.override {
