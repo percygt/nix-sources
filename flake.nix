@@ -13,29 +13,6 @@
 
     swayfx-unwrapped.url = "github:WillPower3309/swayfx";
     swayfx-unwrapped.inputs.nixpkgs.follows = "nixpkgs";
-    # swayfx-unwrapped = {
-    #   url = "github:WillPower3309/swayfx";
-    #   flake = false;
-    # };
-
-    zen-browser.url = "github:MarceColl/zen-browser-flake";
-    zen-browser.inputs.nixpkgs.follows = "nixpkgs";
-
-    keepmenu = {
-      url = "github:percygt/keepmenu";
-      flake = false;
-    };
-
-    pykeepass = {
-      url = "github:libkeepass/pykeepass";
-      flake = false;
-    };
-
-    foot = {
-      url = "git+https://codeberg.org/dnkl/foot";
-      flake = false;
-    };
-
     emacs-overlay = {
       url = "github:nix-community/emacs-overlay/";
       inputs = {
@@ -65,8 +42,6 @@
       forEachSystem = lib.genAttrs systems;
       overlays = {
         emacs = inputs.emacs-overlay.overlays.default;
-        # swayfx-unwrapped = inputs.swayfx-unwrapped.overlays.default;
-        # scenefx = inputs.scenefx.overlays.insert;
         nix-your-shell = inputs.nix-your-shell.overlays.default;
         neovim-nightly = inputs.neovim-nightly-overlay.overlays.default;
       };
@@ -91,28 +66,6 @@
       formatter = forAllSystems (pkgs: pkgs.nixfmt-rfc-style);
       packages = forAllSystems (pkgs: {
         zen-browser = inputs.zen-browser.packages."${pkgs.system}".default;
-        keepmenu = pkgs.callPackage (
-          { keepmenu, python3Packages }:
-          keepmenu.overrideAttrs (
-            _: prev: {
-              installCheckPhase = ''true''; # TODO: Remove once https://github.com/NixOS/nixpkgs/pull/328672 is merged
-              propagatedBuildInputs =
-                [ python3Packages.pynput ]
-                ++ [
-                  (python3Packages.pykeepass.overrideAttrs (_: {
-                    src = inputs.pykeepass;
-                  }))
-                ];
-              src = inputs.keepmenu;
-            }
-          )
-        ) { };
-        # foot-git = pkgs.callPackage (
-        #   { foot }:
-        #   foot.overrideAttrs (_: {
-        #     src = inputs.foot;
-        #   })
-        # ) { };
         emacs-unstable = pkgs.callPackage (
           { emacs-unstable }:
           emacs-unstable.override {
@@ -137,15 +90,6 @@
             inherit (inputs.swayfx-unwrapped.packages.${pkgs.system}) swayfx-unwrapped;
           }
         ) { };
-        # swayfx-git = pkgs.callPackage (
-        #   { swayfx-unwrapped }:
-        #   swayfx-unwrapped.overrideAttrs (old: {
-        #     version = "0.4.0-git";
-        #     src = inputs.swayfx-unwrapped;
-        #     nativeBuildInputs = old.nativeBuildInputs ++ [ pkgs.cmake ];
-        #     buildInputs = old.buildInputs ++ [ pkgs.scenefx ];
-        #   })
-        # ) { };
         neovim-unstable = pkgs.callPackage ({ neovim }: neovim) { };
         nix-your-shell = pkgs.callPackage ({ nix-your-shell }: nix-your-shell) { };
       });
@@ -153,10 +97,7 @@
       overlays = {
         default = final: prev: {
           inherit (outputs.packages.${prev.system})
-            # foot
             clipmon
-            zen-browser
-            keepmenu
             swayfx-git
             emacs-unstable
             emacs-pgtk
