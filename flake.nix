@@ -13,7 +13,7 @@
     nixpkgs-stable.url = "github:nixos/nixpkgs/nixos-24.11";
 
     swayfx-unwrapped.url = "github:WillPower3309/swayfx";
-    swayfx-unwrapped.inputs.nixpkgs.follows = "nixpkgs";
+    # swayfx-unwrapped.inputs.nixpkgs.follows = "nixpkgs";
     emacs-overlay = {
       url = "github:nix-community/emacs-overlay/";
       inputs = {
@@ -72,18 +72,18 @@
             withTreeSitter = true;
           }
         ) { };
-        emacs-pgtk = pkgs.callPackage (
-          { emacs-pgtk }:
-          emacs-pgtk.override {
-            withTreeSitter = true;
-          }
-        ) { };
-        emacs-unstable-pgtk = pkgs.callPackage (
-          { emacs-unstable-pgtk }:
-          emacs-unstable-pgtk.override {
-            withTreeSitter = true;
-          }
-        ) { };
+        # emacs-pgtk = pkgs.callPackage (
+        #   { emacs-pgtk }:
+        #   emacs-pgtk.override {
+        #     withTreeSitter = true;
+        #   }
+        # ) { };
+        # emacs-unstable-pgtk = pkgs.callPackage (
+        #   { emacs-unstable-pgtk }:
+        #   emacs-unstable-pgtk.override {
+        #     withTreeSitter = true;
+        #   }
+        # ) { };
         swayfx-git = pkgs.callPackage (
           { swayfx }:
           swayfx.override {
@@ -97,11 +97,10 @@
       overlays = {
         default = final: prev: {
           inherit (outputs.packages.${prev.system})
-            clipmon
             swayfx-git
             emacs-unstable
-            emacs-pgtk
-            emacs-unstable-pgtk
+            # emacs-pgtk
+            # emacs-unstable-pgtk
             neovim-unstable
             nix-your-shell
             ;
