@@ -9,7 +9,8 @@
   inputs = {
     nixpkgs.url = "github:nixos/nixpkgs/nixpkgs-unstable";
     nixpkgs-master.url = "github:nixos/nixpkgs/master";
-    nixpkgs-stable.url = "github:nixos/nixpkgs/nixos-24.05";
+    nixpkgs-22-11.url = "github:nixos/nixpkgs/nixos-22.11";
+    nixpkgs-stable.url = "github:nixos/nixpkgs/nixos-24.11";
 
     swayfx-unwrapped.url = "github:WillPower3309/swayfx";
     swayfx-unwrapped.inputs.nixpkgs.follows = "nixpkgs";
