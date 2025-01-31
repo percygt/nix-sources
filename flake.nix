@@ -9,7 +9,7 @@
   inputs = {
     nixpkgs.url = "github:nixos/nixpkgs/nixpkgs-unstable";
     nixpkgs-master.url = "github:nixos/nixpkgs/master";
-    nixpkgs-23-05.url = "github:nixos/nixpkgs/nixos-23.05";
+    nixpkgs-old.url = "github:nixos/nixpkgs/nixos-23.11";
     nixpkgs-stable.url = "github:nixos/nixpkgs/nixos-24.11";
 
     swayfx-unwrapped.url = "github:WillPower3309/swayfx";
