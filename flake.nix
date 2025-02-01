@@ -99,6 +99,7 @@
         default = final: prev: {
           inherit (outputs.packages.${prev.system})
             swayfx-git
+            swayfx-unwrapped-git
             emacs-unstable
             # emacs-pgtk
             # emacs-unstable-pgtk
