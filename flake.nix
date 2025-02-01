@@ -65,7 +65,7 @@
     in
     {
       formatter = forAllSystems (pkgs: pkgs.nixfmt-rfc-style);
-      packages = forAllSystems (pkgs: {
+      packages = forAllSystems (pkgs: rec {
         emacs-unstable = pkgs.callPackage (
           { emacs-unstable }:
           emacs-unstable.override {
@@ -84,10 +84,11 @@
         #     withTreeSitter = true;
         #   }
         # ) { };
+        swayfx-unwrapped-git = inputs.swayfx-unwrapped.packages.${pkgs.system}.swayfx-unwrapped;
         swayfx-git = pkgs.callPackage (
           { swayfx }:
           swayfx.override {
-            inherit (inputs.swayfx-unwrapped.packages.${pkgs.system}) swayfx-unwrapped;
+            swayfx-unwrapped = swayfx-unwrapped-git;
           }
         ) { };
         neovim-unstable = pkgs.callPackage ({ neovim }: neovim) { };
