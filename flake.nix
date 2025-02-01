@@ -65,7 +65,7 @@
     in
     {
       formatter = forAllSystems (pkgs: pkgs.nixfmt-rfc-style);
-      packages = forAllSystems (pkgs: rec {
+      packages = forAllSystems (pkgs: {
         emacs-unstable = pkgs.callPackage (
           { emacs-unstable }:
           emacs-unstable.override {
@@ -84,10 +84,30 @@
         #     withTreeSitter = true;
         #   }
         # ) { };
-        swayfx-unwrapped-git = inputs.swayfx-unwrapped.packages.${pkgs.system}.swayfx-unwrapped;
-        swayfx = pkgs.swayfx.override {
-          swayfx-unwrapped = swayfx-unwrapped-git;
-        };
+        swayfx-git = pkgs.callPackage (
+          { swayfx }:
+          swayfx.override {
+            swayfx-unwrapped =
+              inputs.swayfx-unwrapped.packages.${pkgs.system}.swayfx-unwrapped.overrideAttrs
+                (oldAttrs: {
+                  postInstall =
+                    let
+                      swaySession = ''
+                        [Desktop Entry]
+                        Name=SwayNvidia
+                        Comment=An i3-compatible Wayland compositor
+                        Exec=sway --unsupported-gpu
+                        Type=Application
+                      '';
+                    in
+                    ''
+                      [ ! -d $out/share/wayland-sessions ] && mkdir -p $out/share/wayland-sessions
+                      echo "${swaySession}" > $out/share/wayland-sessions/sway-nvidia.desktop
+                    '';
+                  providedSessions = oldAttrs.providedSessions ++ [ "sway-nvidia" ];
+                });
+          }
+        ) { };
         neovim-unstable = pkgs.callPackage ({ neovim }: neovim) { };
         nix-your-shell = pkgs.callPackage ({ nix-your-shell }: nix-your-shell) { };
       });
@@ -95,8 +115,7 @@
       overlays = {
         default = final: prev: {
           inherit (outputs.packages.${prev.system})
-            swayfx
-            swayfx-unwrapped-git
+            swayfx-git
             emacs-unstable
             # emacs-pgtk
             # emacs-unstable-pgtk
