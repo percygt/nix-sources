@@ -85,12 +85,9 @@
         #   }
         # ) { };
         swayfx-unwrapped-git = inputs.swayfx-unwrapped.packages.${pkgs.system}.swayfx-unwrapped;
-        swayfx-git = pkgs.callPackage (
-          { swayfx }:
-          swayfx.override {
-            swayfx-unwrapped = swayfx-unwrapped-git;
-          }
-        ) { };
+        swayfx = pkgs.swayfx.override {
+          swayfx-unwrapped = swayfx-unwrapped-git;
+        };
         neovim-unstable = pkgs.callPackage ({ neovim }: neovim) { };
         nix-your-shell = pkgs.callPackage ({ nix-your-shell }: nix-your-shell) { };
       });
