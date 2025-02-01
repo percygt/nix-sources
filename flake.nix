@@ -95,7 +95,7 @@
       overlays = {
         default = final: prev: {
           inherit (outputs.packages.${prev.system})
-            swayfx-git
+            swayfx
             swayfx-unwrapped-git
             emacs-unstable
             # emacs-pgtk
