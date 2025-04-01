@@ -21,7 +21,12 @@
         nixpkgs-stable.follows = "nixpkgs-stable";
       };
     };
-
+    zen-browser = {
+      url = "github:0xc000022070/zen-browser-flake";
+      # IMPORTANT: we're using "libgbm" and is only available in unstable so ensure
+      # to have it up to date or simply don't specify the nixpkgs input
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
     neovim-nightly-overlay = {
       url = "github:nix-community/neovim-nightly-overlay";
       inputs.nixpkgs.follows = "nixpkgs";
@@ -72,6 +77,9 @@
             withTreeSitter = true;
           }
         ) { };
+        zen-browser = pkgs.callPackage inputs.zen-browser.packages."${pkgs.system}".default { };
+        zen-browser-beta = pkgs.callPackage inputs.zen-browser.packages."${pkgs.system}".beta { };
+        zen-browser-twilight = pkgs.callPackage inputs.zen-browser.packages."${pkgs.system}".twilight { };
         # emacs-pgtk = pkgs.callPackage (
         #   { emacs-pgtk }:
         #   emacs-pgtk.override {
@@ -99,6 +107,9 @@
           inherit (outputs.packages.${prev.system})
             swayfx-git
             emacs-unstable
+            zen-browser
+            zen-browser-beta
+            zen-browser-twilight
             # emacs-pgtk
             # emacs-unstable-pgtk
             neovim-unstable
