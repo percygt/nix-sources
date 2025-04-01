@@ -77,9 +77,9 @@
             withTreeSitter = true;
           }
         ) { };
-        zen-browser = pkgs.callPackage inputs.zen-browser.packages."${pkgs.system}".default { };
-        zen-browser-beta = pkgs.callPackage inputs.zen-browser.packages."${pkgs.system}".beta { };
-        zen-browser-twilight = pkgs.callPackage inputs.zen-browser.packages."${pkgs.system}".twilight { };
+        zen-browser = inputs.zen-browser.packages."${pkgs.system}".default;
+        zen-browser-beta = inputs.zen-browser.packages."${pkgs.system}".beta;
+        zen-browser-twilight = inputs.zen-browser.packages."${pkgs.system}".twilight;
         # emacs-pgtk = pkgs.callPackage (
         #   { emacs-pgtk }:
         #   emacs-pgtk.override {
