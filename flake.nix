@@ -74,7 +74,7 @@
     in
     {
       formatter = forAllSystems (pkgs: pkgs.nixfmt-rfc-style);
-      packages = forAllSystems (pkgs: {
+      packages = forAllSystems (pkgs: rec {
         emacs-unstable = pkgs.callPackage (
           { emacs-unstable }:
           emacs-unstable.override {
@@ -84,6 +84,7 @@
         zen-browser = inputs.zen-browser.packages."${pkgs.system}".default;
         zen-browser-beta = inputs.zen-browser.packages."${pkgs.system}".beta;
         zen-browser-twilight = inputs.zen-browser.packages."${pkgs.system}".twilight;
+        qemu_full = pkgs.callPackage ({ qemu_full }: qemu_full) { };
         quickemu = pkgs.callPackage (
           {
             quickemu,
@@ -100,7 +101,6 @@
             pciutils,
             procps,
             python3,
-            qemu_full,
             socat,
             swtpm,
             usbutils,
