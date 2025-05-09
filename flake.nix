@@ -188,6 +188,7 @@
             zen-browser-beta
             zen-browser-twilight
             quickemu
+            qemu_full
             # emacs-pgtk
             # emacs-unstable-pgtk
             neovim-unstable
