@@ -35,6 +35,10 @@
       url = "github:MercuryTechnologies/nix-your-shell";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+
+    quickemu.url = "github:TuxVinyards/quickemu/freespirit-next";
+    quickemu.flake = false;
+
   };
   outputs =
     { self, ... }@inputs:
@@ -80,6 +84,79 @@
         zen-browser = inputs.zen-browser.packages."${pkgs.system}".default;
         zen-browser-beta = inputs.zen-browser.packages."${pkgs.system}".beta;
         zen-browser-twilight = inputs.zen-browser.packages."${pkgs.system}".twilight;
+        quickemu = pkgs.callPackage (
+          {
+            quickemu,
+            spice-gtk,
+            lib,
+            stdenv,
+            cdrtools,
+            curl,
+            gawk,
+            mesa-demos,
+            gnugrep,
+            gnused,
+            jq,
+            pciutils,
+            procps,
+            python3,
+            qemu_full,
+            socat,
+            swtpm,
+            usbutils,
+            util-linux,
+            unzip,
+            xdg-user-dirs,
+            xrandr,
+            zsync,
+          }:
+          let
+            runtimePaths =
+              [
+                cdrtools
+                curl
+                gawk
+                gnugrep
+                gnused
+                jq
+                pciutils
+                procps
+                python3
+                qemu_full
+                socat
+                swtpm
+                util-linux
+                unzip
+                xrandr
+                zsync
+              ]
+              ++ lib.optionals stdenv.hostPlatform.isLinux [
+                mesa-demos
+                usbutils
+                xdg-user-dirs
+              ];
+          in
+          quickemu.overrideAttrs (oldAttrs: {
+            src = inputs.quickemu;
+            installPhase = ''
+              runHook preInstall
+
+              installManPage docs/quickget.1 docs/quickemu.1 docs/quickemu_conf.5
+              install -Dm755 -t "$out/bin" chunkcheck quickemu quickget quickreport
+
+              # spice-gtk needs to be put in suffix so that when virtualisation.spiceUSBRedirection
+              # is enabled, the wrapped spice-client-glib-usb-acl-helper is used
+              for f in chunkcheck quickget quickemu quickreport; do
+                wrapProgram $out/bin/$f \
+                  --prefix PATH : "${lib.makeBinPath runtimePaths}" \
+                  --suffix PATH : "${lib.makeBinPath [ spice-gtk ]}"
+              done
+
+              runHook postInstall
+            '';
+          })
+        );
+
         # emacs-pgtk = pkgs.callPackage (
         #   { emacs-pgtk }:
         #   emacs-pgtk.override {
