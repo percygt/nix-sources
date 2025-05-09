@@ -367,6 +367,23 @@
         "type": "github"
       }
     },
+    "quickemu": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1745575021,
+        "narHash": "sha256-dfKTgSJEZrJB422STsp+FCGh1bL+7w6O7iLaz0PIG1k=",
+        "owner": "TuxVinyards",
+        "repo": "quickemu",
+        "rev": "43d3113a2b7e4b58ec19c4c96ca929b9cd9e0e4a",
+        "type": "github"
+      },
+      "original": {
+        "owner": "TuxVinyards",
+        "ref": "freespirit-next",
+        "repo": "quickemu",
+        "type": "github"
+      }
+    },
     "root": {
       "inputs": {
         "emacs-overlay": "emacs-overlay",
@@ -376,6 +393,7 @@
         "nixpkgs-master": "nixpkgs-master",
         "nixpkgs-old": "nixpkgs-old",
         "nixpkgs-stable": "nixpkgs-stable",
+        "quickemu": "quickemu",
         "swayfx-unwrapped": "swayfx-unwrapped",
         "zen-browser": "zen-browser"
       }
