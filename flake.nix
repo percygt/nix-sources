@@ -155,7 +155,7 @@
               runHook postInstall
             '';
           })
-        );
+        ) { };
 
         # emacs-pgtk = pkgs.callPackage (
         #   { emacs-pgtk }:
@@ -187,6 +187,7 @@
             zen-browser
             zen-browser-beta
             zen-browser-twilight
+            quickemu
             # emacs-pgtk
             # emacs-unstable-pgtk
             neovim-unstable
