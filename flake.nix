@@ -84,15 +84,15 @@
         zen-browser = inputs.zen-browser.packages."${pkgs.system}".default;
         zen-browser-beta = inputs.zen-browser.packages."${pkgs.system}".beta;
         zen-browser-twilight = inputs.zen-browser.packages."${pkgs.system}".twilight;
-        qemu = pkgs.callPackage ({ qemu }: qemu.override { smbdSupport = true; }) { };
-        quickemu = pkgs.callPackage (
-          {
-            quickemu,
-          }:
-          quickemu.overrideAttrs (oldAttrs: {
-            src = inputs.quickemu;
-          })
-        ) { };
+        # qemu = pkgs.callPackage ({ qemu }: qemu.override { smbdSupport = true; }) { };
+        # quickemu = pkgs.callPackage (
+        #   {
+        #     quickemu,
+        #   }:
+        #   quickemu.overrideAttrs (oldAttrs: {
+        #     src = inputs.quickemu;
+        #   })
+        # ) { };
 
         # emacs-pgtk = pkgs.callPackage (
         #   { emacs-pgtk }:
@@ -124,8 +124,8 @@
             zen-browser
             zen-browser-beta
             zen-browser-twilight
-            qemu
-            quickemu
+            # qemu
+            # quickemu
             # emacs-pgtk
             # emacs-unstable-pgtk
             neovim-unstable
