@@ -9,11 +9,11 @@
   inputs = {
     nixpkgs.url = "github:nixos/nixpkgs/nixpkgs-unstable";
     nixpkgs-master.url = "github:nixos/nixpkgs/master";
-    nixpkgs-old.url = "github:nixos/nixpkgs/nixos-23.11";
-    nixpkgs-stable.url = "github:nixos/nixpkgs/nixos-24.11";
+    nixpkgs-old.url = "github:nixos/nixpkgs/nixos-24.11";
+    nixpkgs-stable.url = "github:nixos/nixpkgs/nixos-25.05";
 
-    swayfx-unwrapped.url = "github:WillPower3309/swayfx";
-    # swayfx-unwrapped.inputs.nixpkgs.follows = "nixpkgs";
+    swayfx-unwrapped-git.url = "github:WillPower3309/swayfx";
+    # swayfx-unwrapped-git.inputs.nixpkgs.follows = "nixpkgs";
     emacs-overlay = {
       url = "github:nix-community/emacs-overlay/";
       inputs = {
@@ -33,6 +33,10 @@
     };
     nix-your-shell = {
       url = "github:MercuryTechnologies/nix-your-shell";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+    dimland = {
+      url = "github:keifufu/dimland";
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
@@ -84,6 +88,7 @@
         zen-browser = inputs.zen-browser.packages."${pkgs.system}".default;
         zen-browser-beta = inputs.zen-browser.packages."${pkgs.system}".beta;
         zen-browser-twilight = inputs.zen-browser.packages."${pkgs.system}".twilight;
+        dimland = inputs.dimland.packages."${pkgs.system}".default;
         # qemu = pkgs.callPackage ({ qemu }: qemu.override { smbdSupport = true; }) { };
         # quickemu = pkgs.callPackage (
         #   {
@@ -109,7 +114,7 @@
         swayfx-git = pkgs.callPackage (
           { swayfx }:
           swayfx.override {
-            inherit (inputs.swayfx-unwrapped.packages.${pkgs.system}) swayfx-unwrapped;
+            swayfx-unwrapped = inputs.swayfx-unwrapped-git.packages.${pkgs.system}.swayfx-unwrapped-git;
           }
         ) { };
         neovim-unstable = pkgs.callPackage ({ neovim }: neovim) { };
@@ -124,6 +129,7 @@
             zen-browser
             zen-browser-beta
             zen-browser-twilight
+            dimland
             # qemu
             # quickemu
             # emacs-pgtk
