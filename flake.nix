@@ -35,14 +35,9 @@
       url = "github:MercuryTechnologies/nix-your-shell";
       inputs.nixpkgs.follows = "nixpkgs";
     };
-    dimland = {
-      url = "github:keifufu/dimland";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
 
-    quickemu.url = "github:TuxVinyards/quickemu/freespirit-next";
-    quickemu.flake = false;
-
+    hyprlock.url = "github:hyprwm/hyprlock";
+    hyprlock.inputs.nixpkgs.follows = "nixpkgs";
   };
   outputs =
     { self, ... }@inputs:
@@ -88,17 +83,7 @@
         zen-browser = inputs.zen-browser.packages."${pkgs.system}".default;
         zen-browser-beta = inputs.zen-browser.packages."${pkgs.system}".beta;
         zen-browser-twilight = inputs.zen-browser.packages."${pkgs.system}".twilight;
-        dimland = inputs.dimland.packages."${pkgs.system}".default;
-        # qemu = pkgs.callPackage ({ qemu }: qemu.override { smbdSupport = true; }) { };
-        # quickemu = pkgs.callPackage (
-        #   {
-        #     quickemu,
-        #   }:
-        #   quickemu.overrideAttrs (oldAttrs: {
-        #     src = inputs.quickemu;
-        #   })
-        # ) { };
-
+        hyprlock = inputs.hyprlock.packages."${pkgs.system}".default;
         # emacs-pgtk = pkgs.callPackage (
         #   { emacs-pgtk }:
         #   emacs-pgtk.override {
@@ -129,13 +114,9 @@
             zen-browser
             zen-browser-beta
             zen-browser-twilight
-            dimland
-            # qemu
-            # quickemu
-            # emacs-pgtk
-            # emacs-unstable-pgtk
             neovim-unstable
             nix-your-shell
+            hyprlock
             ;
         };
       };
