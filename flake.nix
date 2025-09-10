@@ -1,9 +1,13 @@
 {
   description = "PercyGT's nix sources";
   nixConfig = {
-    extra-substituters = [ "https://nix-community.cachix.org" ];
+    extra-substituters = [
+      "https://nix-community.cachix.org"
+      "https://niri.cachix.org"
+    ];
     extra-trusted-public-keys = [
       "nix-community.cachix.org-1:mB9FSh9qf2dCimDSUo8Zy7bkq5CX+/rkCWyvRCYg3Fs="
+      "niri.cachix.org-1:Wv0OmO7PsuocRKzfDoJ3mulSl7Z6oezYhGhR+3W2964="
     ];
   };
   inputs = {
@@ -11,6 +15,9 @@
     nixpkgs-master.url = "github:nixos/nixpkgs/master";
     nixpkgs-old.url = "github:nixos/nixpkgs/nixos-24.11";
     nixpkgs-stable.url = "github:nixos/nixpkgs/nixos-25.05";
+
+    niri.url = "github:sodiboo/niri-flake";
+    niri.inputs.nixpkgs.follows = "nixpkgs";
 
     swayfx-unwrapped-git.url = "github:WillPower3309/swayfx";
     # swayfx-unwrapped-git.inputs.nixpkgs.follows = "nixpkgs";
@@ -35,9 +42,6 @@
       url = "github:MercuryTechnologies/nix-your-shell";
       inputs.nixpkgs.follows = "nixpkgs";
     };
-
-    hyprlock.url = "github:hyprwm/hyprlock";
-    hyprlock.inputs.nixpkgs.follows = "nixpkgs";
   };
   outputs =
     { self, ... }@inputs:
@@ -53,6 +57,7 @@
         emacs = inputs.emacs-overlay.overlays.default;
         nix-your-shell = inputs.nix-your-shell.overlays.default;
         neovim-nightly = inputs.neovim-nightly-overlay.overlays.default;
+        niri = inputs.niri.overlays.niri;
       };
       packagesFrom =
         inputs-nixpkgs:
@@ -80,10 +85,11 @@
             withTreeSitter = true;
           }
         ) { };
+        niri-stable = inputs.niri.packages."${pkgs.system}".niri-stable;
+        niri-unstable = inputs.niri.packages."${pkgs.system}".niri-unstable;
         zen-browser = inputs.zen-browser.packages."${pkgs.system}".default;
         zen-browser-beta = inputs.zen-browser.packages."${pkgs.system}".beta;
         zen-browser-twilight = inputs.zen-browser.packages."${pkgs.system}".twilight;
-        hyprlock = inputs.hyprlock.packages."${pkgs.system}".default;
         # emacs-pgtk = pkgs.callPackage (
         #   { emacs-pgtk }:
         #   emacs-pgtk.override {
@@ -115,8 +121,9 @@
             zen-browser-beta
             zen-browser-twilight
             neovim-unstable
+            niri-stable
+            niri-unstable
             nix-your-shell
-            hyprlock
             ;
         };
       };
