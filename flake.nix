@@ -57,7 +57,6 @@
         emacs = inputs.emacs-overlay.overlays.default;
         nix-your-shell = inputs.nix-your-shell.overlays.default;
         neovim-nightly = inputs.neovim-nightly-overlay.overlays.default;
-        niri = inputs.niri.overlays.niri;
       };
       packagesFrom =
         inputs-nixpkgs:
