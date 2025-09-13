@@ -86,6 +86,8 @@
         ) { };
         niri-stable = inputs.niri.packages."${pkgs.system}".niri-stable;
         niri-unstable = inputs.niri.packages."${pkgs.system}".niri-unstable;
+        xwayland-satellite-stable = inputs.niri.packages."${pkgs.system}".xwayland-satellite-stable;
+        xwayland-satellite-unstable = inputs.niri.packages."${pkgs.system}".xwayland-satellite-unstable;
         zen-browser = inputs.zen-browser.packages."${pkgs.system}".default;
         zen-browser-beta = inputs.zen-browser.packages."${pkgs.system}".beta;
         zen-browser-twilight = inputs.zen-browser.packages."${pkgs.system}".twilight;
@@ -122,6 +124,8 @@
             neovim-unstable
             niri-stable
             niri-unstable
+            xwayland-satellite-stable
+            xwayland-satellite-unstable
             nix-your-shell
             ;
         };
