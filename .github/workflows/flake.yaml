@@ -15,7 +15,7 @@ jobs:
     outputs:
       changed: ${{ steps.changes.outputs.changed }}
     steps:
-      - uses: actions/checkout@v4.1.7
+      - uses: actions/checkout@v5
       - uses: determinatesystems/nix-installer-action@main
       - uses: determinatesystems/magic-nix-cache-action@main
       - uses: determinatesystems/flake-checker-action@main
@@ -38,7 +38,7 @@ jobs:
     env:
       CACHIX_BINARY_CACHE: percygtdev
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
       - uses: determinatesystems/nix-installer-action@main
       - uses: cachix/cachix-action@v16
         with:
