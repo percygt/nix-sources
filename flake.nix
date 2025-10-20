@@ -85,12 +85,12 @@
             withTreeSitter = true;
           }
         ) { };
-        niri-stable = pkgs.callPackage ({ niri-stable }: niri-stable) { };
-        niri-unstable = pkgs.callPackage ({ niri-unstable }: niri-unstable) { };
-        xwayland-satellite-stable = pkgs.callPackage (
+        niri-stable-git = pkgs.callPackage ({ niri-stable }: niri-stable) { };
+        niri-unstable-git = pkgs.callPackage ({ niri-unstable }: niri-unstable) { };
+        xwayland-satellite-stable-git = pkgs.callPackage (
           { xwayland-satellite-stable }: xwayland-satellite-stable
         ) { };
-        xwayland-satellite-unstable = pkgs.callPackage (
+        xwayland-satellite-unstable-git = pkgs.callPackage (
           { xwayland-satellite-unstable }: xwayland-satellite-unstable
         ) { };
         zen-browser = inputs.zen-browser.packages."${pkgs.system}".default;
@@ -127,10 +127,10 @@
             zen-browser-beta
             zen-browser-twilight
             neovim-unstable
-            niri-stable
-            niri-unstable
-            xwayland-satellite-stable
-            xwayland-satellite-unstable
+            niri-stable-git
+            niri-unstable-git
+            xwayland-satellite-stable-git
+            xwayland-satellite-unstable-git
             nix-your-shell
             ;
         };
