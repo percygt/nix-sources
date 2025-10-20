@@ -54,7 +54,6 @@
       inherit (inputs.nixpkgs) lib;
       forEachSystem = lib.genAttrs systems;
       overlays = {
-        niri = inputs.niri.overlays.niri;
         emacs = inputs.emacs-overlay.overlays.default;
         nix-your-shell = inputs.nix-your-shell.overlays.default;
         neovim-nightly = inputs.neovim-nightly-overlay.overlays.default;
@@ -85,14 +84,10 @@
             withTreeSitter = true;
           }
         ) { };
-        niri-stable-git = pkgs.callPackage ({ niri-stable }: niri-stable) { };
-        niri-unstable-git = pkgs.callPackage ({ niri-unstable }: niri-unstable) { };
-        xwayland-satellite-stable-git = pkgs.callPackage (
-          { xwayland-satellite-stable }: xwayland-satellite-stable
-        ) { };
-        xwayland-satellite-unstable-git = pkgs.callPackage (
-          { xwayland-satellite-unstable }: xwayland-satellite-unstable
-        ) { };
+        niri-stable-git = inputs.niri.packages."${pkgs.system}".niri-stable;
+        niri-unstable-git = inputs.niri.packages."${pkgs.system}".niri-unstable;
+        xwayland-satellite-stable-git = inputs.niri.packages."${pkgs.system}".xwayland-satellite-stable;
+        xwayland-satellite-unstable-git = inputs.niri.packages."${pkgs.system}".xwayland-satellite-unstable;
         zen-browser = inputs.zen-browser.packages."${pkgs.system}".default;
         zen-browser-beta = inputs.zen-browser.packages."${pkgs.system}".beta;
         zen-browser-twilight = inputs.zen-browser.packages."${pkgs.system}".twilight;
