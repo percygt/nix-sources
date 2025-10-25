@@ -28,10 +28,6 @@
       inputs.nixpkgs.follows = "nixpkgs-unstable";
     };
     neovim-nightly-overlay.url = "github:nix-community/neovim-nightly-overlay";
-    nix-your-shell = {
-      url = "github:MercuryTechnologies/nix-your-shell";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
   };
   outputs =
     { self, ... }@inputs:
@@ -100,7 +96,6 @@
           }
         ) { };
         neovim-unstable = pkgs.callPackage ({ neovim }: neovim) { };
-        nix-your-shell = pkgs.callPackage ({ nix-your-shell }: nix-your-shell) { };
       });
 
       overlays = {
@@ -116,7 +111,6 @@
             niri-unstable-git
             xwayland-satellite-stable-git
             xwayland-satellite-unstable-git
-            nix-your-shell
             ;
         };
       };
