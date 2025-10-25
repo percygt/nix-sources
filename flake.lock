@@ -6,11 +6,11 @@
         "nixpkgs-stable": "nixpkgs-stable"
       },
       "locked": {
-        "lastModified": 1761412029,
-        "narHash": "sha256-9zPQ+2IRi6lKI8/yyWR4E6qz3Y/C5VHi9YX0idas0ks=",
+        "lastModified": 1761413029,
+        "narHash": "sha256-tkhF8XNsJIaPVUo2uLCoSeXAJJwgKWlHGSt4h48K3tk=",
         "owner": "nix-community",
         "repo": "emacs-overlay",
-        "rev": "e9b91ddc224845ecfe8d6d7bee08e126f5e7d9ec",
+        "rev": "742237456a278aa93fbc95f16ecbfd93563b9840",
         "type": "github"
       },
       "original": {
@@ -236,11 +236,11 @@
         "xwayland-satellite-unstable": "xwayland-satellite-unstable"
       },
       "locked": {
-        "lastModified": 1761348525,
-        "narHash": "sha256-V738NRqRVHCug0rPbYmXFAZsQnqmQAurDzu54WY/YIk=",
+        "lastModified": 1761413535,
+        "narHash": "sha256-bLkDHmHCYn9hWZJXXRAYCnB1OI7Garoe19571V7bPsU=",
         "owner": "sodiboo",
         "repo": "niri-flake",
-        "rev": "34e1de2311cda824f7685f2e2cd9453263ef75d5",
+        "rev": "0ec38cd3276971c99289d80b1215aaf7ada65573",
         "type": "github"
       },
       "original": {
@@ -300,11 +300,11 @@
     },
     "nixpkgs-master": {
       "locked": {
-        "lastModified": 1761411919,
-        "narHash": "sha256-uVKnhXwGPask+yAgh9PpGU8wctLt4Iuqncc4LZTqvE4=",
+        "lastModified": 1761415904,
+        "narHash": "sha256-GrOxep6p/GBrDrbQOirTmpbCEvz9g4PdjfbaxywRkr8=",
         "owner": "nixos",
         "repo": "nixpkgs",
-        "rev": "a3d8f14f392148d2ac3081a87ce87a2173b6a78c",
+        "rev": "f9e2883f6f2a024c8f5baa53f956fb39d661988b",
         "type": "github"
       },
       "original": {
@@ -560,11 +560,11 @@
     "xwayland-satellite-unstable": {
       "flake": false,
       "locked": {
-        "lastModified": 1761345612,
-        "narHash": "sha256-ph61jGpaonY04jdfQxkBYRgw7ptlNHo7K0W+5kCV/+0=",
+        "lastModified": 1761407446,
+        "narHash": "sha256-Z2IB6ni6iPtv2Bon/bkru9R96UzBR3s8HY+tcDuCH74=",
         "owner": "Supreeeme",
         "repo": "xwayland-satellite",
-        "rev": "04816e2a3634087db3de39043fcc9db2afcb0c44",
+        "rev": "52cc06e6c63674fc997fd61d27aaccfce2da5b5d",
         "type": "github"
       },
       "original": {
