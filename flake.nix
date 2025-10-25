@@ -9,34 +9,25 @@
     ];
   };
   inputs = {
-    nixpkgs-unstable.url = "github:nixos/nixpkgs/nixpkgs-unstable";
-    nixpkgs-master.url = "github:nixos/nixpkgs/master";
-    nixpkgs-old.url = "github:nixos/nixpkgs/nixos-24.11";
-    nixpkgs-stable.url = "github:nixos/nixpkgs/nixos-25.05";
-    nixpkgs.follows = "nixpkgs-unstable";
+    nixpkgs.follows = "nixpkgs-stable";
+    nixpkgs-stable.url = "https://channels.nixos.org/nixos-25.05/nixexprs.tar.xz";
+    nixpkgs-old.url = "https://channels.nixos.org/nixos-24.11/nixexprs.tar.xz";
+    nixpkgs-unstable.url = "https://channels.nixos.org/nixos-unstable/nixexprs.tar.xz";
+    nixpkgs-master.url = "https://channels.nixos.org/nixos-master/nixexprs.tar.xz";
 
     niri.url = "github:sodiboo/niri-flake";
     niri.inputs.nixpkgs.follows = "nixpkgs";
 
     swayfx-unwrapped-git.url = "github:WillPower3309/swayfx";
     # swayfx-unwrapped-git.inputs.nixpkgs.follows = "nixpkgs";
-    emacs-overlay = {
-      url = "github:nix-community/emacs-overlay/";
-      inputs = {
-        nixpkgs.follows = "nixpkgs";
-        nixpkgs-stable.follows = "nixpkgs-stable";
-      };
-    };
+    emacs-overlay.url = "github:nix-community/emacs-overlay/";
     zen-browser = {
       url = "github:0xc000022070/zen-browser-flake";
       # IMPORTANT: we're using "libgbm" and is only available in unstable so ensure
       # to have it up to date or simply don't specify the nixpkgs input
-      inputs.nixpkgs.follows = "nixpkgs";
+      inputs.nixpkgs.follows = "nixpkgs-unstable";
     };
-    neovim-nightly-overlay = {
-      url = "github:nix-community/neovim-nightly-overlay";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
+    neovim-nightly-overlay.url = "github:nix-community/neovim-nightly-overlay";
     nix-your-shell = {
       url = "github:MercuryTechnologies/nix-your-shell";
       inputs.nixpkgs.follows = "nixpkgs";
