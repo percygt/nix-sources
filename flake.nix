@@ -13,7 +13,7 @@
     nixpkgs-stable.url = "https://channels.nixos.org/nixos-25.05/nixexprs.tar.xz";
     nixpkgs-old.url = "https://channels.nixos.org/nixos-24.11/nixexprs.tar.xz";
     nixpkgs-unstable.url = "https://channels.nixos.org/nixos-unstable/nixexprs.tar.xz";
-    nixpkgs-master.url = "https://channels.nixos.org/nixos-master/nixexprs.tar.xz";
+    nixpkgs-master.url = "github:nixos/nixpkgs/master";
 
     niri.url = "github:sodiboo/niri-flake";
     niri.inputs.nixpkgs.follows = "nixpkgs";
