@@ -69,8 +69,9 @@ jobs:
           git config user.name github-actions
           git config user.email github-actions@github.com
 
-      - name: Flake lock
+      - name: Update flake inputs
         run: |
+          nix flake update --accept-flake-config
           git commit -m "Updated flake inputs" flake.lock || true
 
       - name: Push commit with updated inputs
