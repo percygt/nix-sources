@@ -3,7 +3,6 @@ name: Update and cache
 
 "on":
   push:
-  pull_request:
   schedule:
     # 12:00AM PHT Sun,Wed
     - cron: 0 16 * * 6,2
