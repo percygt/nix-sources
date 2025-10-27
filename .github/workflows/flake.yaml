@@ -22,47 +22,6 @@ jobs:
         with:
           nix_path: nixpkgs=channel:nixos-unstable
 
-      - name: Update flake inputs
-        run: |
-          nix flake update --accept-flake-config
-
-      - uses: dorny/paths-filter@v3
-        id: changes
-        with:
-          filters: |
-            changed:
-              - '*'
-
-  build:
-    needs: update
-    if: ${{ needs.update.outputs.changed == 'true' }}
-    runs-on: ubuntu-latest
-    env:
-      CACHIX_BINARY_CACHE: percygtdev
-    steps:
-      - name: Free Disk Space (Ubuntu)
-        uses: jlumbroso/free-disk-space@v1.3.1
-      - uses: actions/checkout@v5
-      - uses: cachix/install-nix-action@v31
-        with:
-          nix_path: nixpkgs=channel:nixos-unstable
-      - uses: cachix/cachix-action@v16
-        with:
-          authToken: ${{ secrets.CACHIX_AUTH_TOKEN }}
-          name: percygtdev
-      - name: Use cachix cache
-        run: cachix use "$CACHIX_BINARY_CACHE"
-      - name: Update flake inputs
-        run: |
-          nix flake update --accept-flake-config
-      - name: Build packages
-        run: |
-          nix flake show --accept-flake-config --json \
-            | jq  '.packages."x86_64-linux"|keys[]' \
-            | xargs -I '{}' nix build --accept-flake-config --json --no-link --print-build-logs '.#{}' \
-            | jq -r '.[].outputs | to_entries[].value' \
-            | cachix push "$CACHIX_BINARY_CACHE"
-
       - name: Configure Git
         run: |
           git config user.name github-actions
@@ -77,3 +36,61 @@ jobs:
         run: |
           git pull --rebase --autostash
           git push
+
+      - uses: dorny/paths-filter@v3
+        id: changes
+        with:
+          filters: |
+            changed:
+              - 'flake.*'
+
+  archive:
+    needs: update
+    if: ${{ needs.update.outputs.changed == 'true' }}
+    runs-on: ubuntu-latest
+    env:
+      CACHIX_BINARY_CACHE: percygtdev
+    steps:
+      - name: Free Disk Space (Ubuntu)
+        uses: jlumbroso/free-disk-space@v1.3.1
+      - uses: actions/checkout@v5
+      - uses: cachix/install-nix-action@v31
+        with:
+          nix_path: nixpkgs=channel:nixos-unstable
+      - uses: cachix/cachix-action@v15
+        with:
+          authToken: ${{ secrets.CACHIX_AUTH_TOKEN }}
+          name: percygtdev
+      - name: Use cachix cache
+        run: cachix use "$CACHIX_BINARY_CACHE"
+      - name: Archive flake inputs
+        run: |
+          nix flake archive --json \
+          | jq -r '.path,(.inputs|to_entries[].value.path)' \
+          | cachix push "$CACHIX_BINARY_CACHE"
+
+  build:
+    needs: archive
+    runs-on: ubuntu-latest
+    env:
+      CACHIX_BINARY_CACHE: percygtdev
+    steps:
+      - name: Free Disk Space (Ubuntu)
+        uses: jlumbroso/free-disk-space@v1.3.1
+      - uses: actions/checkout@v5
+      - uses: cachix/install-nix-action@v31
+        with:
+          nix_path: nixpkgs=channel:nixos-unstable
+      - uses: cachix/cachix-action@v15
+        with:
+          authToken: ${{ secrets.CACHIX_AUTH_TOKEN }}
+          name: percygtdev
+      - name: Use cachix cache
+        run: cachix use "$CACHIX_BINARY_CACHE"
+      - name: Build packages
+        run: |
+          nix flake show --accept-flake-config --json \
+            | jq  '.packages."x86_64-linux"|keys[]' \
+            | xargs -I '{}' nix build --accept-flake-config --json --no-link --print-build-logs '.#{}' \
+            | jq -r '.[].outputs | to_entries[].value' \
+            | cachix push "$CACHIX_BINARY_CACHE"
