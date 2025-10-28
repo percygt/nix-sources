@@ -35,6 +35,7 @@ jobs:
       - name: Update flake inputs
         run: |
           nix flake update --accept-flake-config
+          git commit -m "Updated flake inputs" flake.lock || true
 
       - name: Check for changes
         uses: dorny/paths-filter@v3
@@ -47,7 +48,6 @@ jobs:
       - name: Push commit with updated inputs
         if: steps.changes.outputs.changed == 'true'
         run: |
-          git commit -m "Updated flake inputs" flake.lock || true
           git pull --rebase --autostash
           git push
 
