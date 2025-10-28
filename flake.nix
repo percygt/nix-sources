@@ -2,14 +2,15 @@
   description = "PercyGT's nix sources";
   nixConfig = {
     extra-substituters = [
+      "https://percygtdev.cachix.org"
       "https://nix-community.cachix.org"
     ];
     extra-trusted-public-keys = [
+      "percygtdev.cachix.org-1:AGd4bI4nW7DkJgniWF4tS64EX2uSYIGqjZih2UVoxko="
       "nix-community.cachix.org-1:mB9FSh9qf2dCimDSUo8Zy7bkq5CX+/rkCWyvRCYg3Fs="
     ];
   };
   inputs = {
-    # nixpkgs.follows = "nixpkgs-stable";
     nixpkgs-stable.url = "https://channels.nixos.org/nixos-25.05/nixexprs.tar.xz";
     nixpkgs-old.url = "https://channels.nixos.org/nixos-24.11/nixexprs.tar.xz";
     nixpkgs-unstable.url = "https://channels.nixos.org/nixos-unstable/nixexprs.tar.xz";
