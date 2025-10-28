@@ -10,17 +10,22 @@ name: Update and cache
   workflow_dispatch:
 
 jobs:
-  update:
+  caches:
     runs-on: ubuntu-latest
-    outputs:
-      changed: ${{ steps.changes.outputs.changed }}
     steps:
       - name: Free Disk Space (Ubuntu)
         uses: jlumbroso/free-disk-space@v1.3.1
+
       - uses: actions/checkout@v5
-      - uses: cachix/install-nix-action@v31
+      - name: Install nix
+        uses: cachix/install-nix-action@v31
         with:
           nix_path: nixpkgs=channel:nixos-unstable
+
+      - uses: cachix/cachix-action@v15
+        with:
+          authToken: ${{ secrets.CACHIX_AUTH_TOKEN }}
+          name: percygtdev
 
       - name: Configure Git
         run: |
@@ -30,40 +35,31 @@ jobs:
       - name: Update flake inputs
         run: |
           nix flake update --accept-flake-config
-          git commit -m "Updated flake inputs" flake.lock || true
 
-      - name: Push commit with updated inputs
-        run: |
-          git pull --rebase --autostash
-          git push
-
-      - uses: cachix/cachix-action@v15
-        with:
-          authToken: ${{ secrets.CACHIX_AUTH_TOKEN }}
-          name: percygtdev
-
-      - name: Use cachix cache
-        run: cachix use "$CACHIX_BINARY_CACHE"
-
-      - uses: dorny/paths-filter@v3
+      - name: Check for changes
+        uses: dorny/paths-filter@v3
         id: changes
         with:
           filters: |
             changed:
               - 'flake.*'
 
+      - name: Push commit with updated inputs
+        if: steps.changes.outputs.changed == 'true'
+        run: |
+          git commit -m "Updated flake inputs" flake.lock || true
+          git pull --rebase --autostash
+          git push
+
       - name: Archive flake inputs
         if: steps.changes.outputs.changed == 'true'
         run: |
           nix flake archive --json \
-          | jq -r '.path,(.inputs|to_entries[].value.path)' \
-          | cachix push "$CACHIX_BINARY_CACHE"
+          | jq -r '.path,(.inputs|to_entries[].value.path)'
 
       - name: Build packages
         if: steps.changes.outputs.changed == 'true'
         run: |
           nix flake show --accept-flake-config --json \
           | jq  '.packages."x86_64-linux"|keys[]' \
-          | xargs -I '{}' nix build --accept-flake-config --json --no-link --print-build-logs '.#{}' \
-          | jq -r '.[].outputs | to_entries[].value' \
-          | cachix push "$CACHIX_BINARY_CACHE"
+          | xargs -I '{}' nix build --accept-flake-config --json --no-link --print-build-logs '.#{}'
