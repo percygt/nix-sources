@@ -22,12 +22,6 @@
     swayfx-unwrapped-git.url = "github:WillPower3309/swayfx";
     # swayfx-unwrapped-git.inputs.nixpkgs.follows = "nixpkgs";
     emacs-overlay.url = "github:nix-community/emacs-overlay/";
-    zen-browser = {
-      url = "github:0xc000022070/zen-browser-flake";
-      # IMPORTANT: we're using "libgbm" and is only available in unstable so ensure
-      # to have it up to date or simply don't specify the nixpkgs input
-      inputs.nixpkgs.follows = "nixpkgs-unstable";
-    };
     neovim-nightly-overlay.url = "github:nix-community/neovim-nightly-overlay";
   };
   outputs =
@@ -74,9 +68,6 @@
         niri-unstable-git = inputs.niri.packages."${pkgs.system}".niri-unstable;
         xwayland-satellite-stable-git = inputs.niri.packages."${pkgs.system}".xwayland-satellite-stable;
         xwayland-satellite-unstable-git = inputs.niri.packages."${pkgs.system}".xwayland-satellite-unstable;
-        zen-browser = inputs.zen-browser.packages."${pkgs.system}".default;
-        zen-browser-beta = inputs.zen-browser.packages."${pkgs.system}".beta;
-        zen-browser-twilight = inputs.zen-browser.packages."${pkgs.system}".twilight;
         # emacs-pgtk = pkgs.callPackage (
         #   { emacs-pgtk }:
         #   emacs-pgtk.override {
@@ -103,9 +94,6 @@
           inherit (outputs.packages.${prev.system})
             swayfx-git
             emacs-unstable
-            zen-browser
-            zen-browser-beta
-            zen-browser-twilight
             neovim-unstable
             niri-stable-git
             niri-unstable-git
