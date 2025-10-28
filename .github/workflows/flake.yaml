@@ -3,14 +3,13 @@ name: Update and cache
 
 "on":
   push:
-  schedule:
-    # 12:00AM PHT Sun,Wed
-    - cron: 0 16 * * 6,2
-    # - cron: "0 * * * *" # Hourly. We want it to run frequently.
   workflow_dispatch:
+  schedule:
+    - cron: 0 16 * * 6,2 # 12:00AM PHT Sun,Wed
+    # - cron: "0 * * * *" # Hourly. We want it to run frequently.
 
 jobs:
-  caches:
+  caching:
     runs-on: ubuntu-latest
     steps:
       - name: Free Disk Space (Ubuntu)
@@ -37,6 +36,11 @@ jobs:
           nix flake update --accept-flake-config
           git commit -m "Updated flake inputs" flake.lock || true
 
+      - name: Push commit with updated inputs
+        run: |
+          git pull --rebase --autostash
+          git push
+
       - name: Check for changes
         uses: dorny/paths-filter@v3
         id: changes
@@ -44,18 +48,6 @@ jobs:
           filters: |
             changed:
               - 'flake.*'
-
-      - name: Push commit with updated inputs
-        if: steps.changes.outputs.changed == 'true'
-        run: |
-          git pull --rebase --autostash
-          git push
-
-      - name: Archive flake inputs
-        if: steps.changes.outputs.changed == 'true'
-        run: |
-          nix flake archive --json \
-          | jq -r '.path,(.inputs|to_entries[].value.path)'
 
       - name: Build packages
         if: steps.changes.outputs.changed == 'true'
