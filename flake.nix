@@ -20,7 +20,7 @@
     nixpkgs.follows = "nixpkgs-unstable";
 
     niri.url = "github:sodiboo/niri-flake";
-    swayfx-unwrapped-git.url = "github:WillPower3309/swayfx";
+    # swayfx-unwrapped-git.url = "github:WillPower3309/swayfx";
     emacs-overlay.url = "github:nix-community/emacs-overlay/";
     neovim-nightly-overlay.url = "github:nix-community/neovim-nightly-overlay";
   };
@@ -82,26 +82,26 @@
         #     withTreeSitter = true;
         #   }
         # ) { };
-        swayfx-git = pkgs.callPackage (
-          { swayfx }:
-          swayfx.override {
-            swayfx-unwrapped =
-              inputs.swayfx-unwrapped-git.packages.${pkgs.stdenv.hostPlatform.system}.swayfx-unwrapped-git;
-          }
-        ) { };
+        # swayfx-git = pkgs.callPackage (
+        #   { swayfx }:
+        #   swayfx.override {
+        #     swayfx-unwrapped =
+        #       inputs.swayfx-unwrapped-git.packages.${pkgs.stdenv.hostPlatform.system}.swayfx-unwrapped-git;
+        #   }
+        # ) { };
         neovim-unstable = pkgs.callPackage ({ neovim }: neovim) { };
       });
 
       overlays = {
         default = final: prev: {
           inherit (outputs.packages.${prev.stdenv.hostPlatform.system})
-            swayfx-git
+            # swayfx-git
             emacs-unstable
             neovim-unstable
-            niri-stable-git
-            niri-unstable-git
-            xwayland-satellite-stable-git
-            xwayland-satellite-unstable-git
+            niri-stable
+            niri-unstable
+            xwayland-satellite-stable
+            xwayland-satellite-unstable
             ;
         };
       };
