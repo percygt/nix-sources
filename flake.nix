@@ -65,10 +65,12 @@
             withTreeSitter = true;
           }
         ) { };
-        niri-stable-git = inputs.niri.packages."${pkgs.system}".niri-stable;
-        niri-unstable-git = inputs.niri.packages."${pkgs.system}".niri-unstable;
-        xwayland-satellite-stable-git = inputs.niri.packages."${pkgs.system}".xwayland-satellite-stable;
-        xwayland-satellite-unstable-git = inputs.niri.packages."${pkgs.system}".xwayland-satellite-unstable;
+        inherit (inputs.niri.packages."${pkgs.stdenv.hostPlatform.system}")
+          niri-stable
+          niri-unstable
+          xwayland-satellite-stable
+          xwayland-satellite-unstable-git
+          ;
         # emacs-pgtk = pkgs.callPackage (
         #   { emacs-pgtk }:
         #   emacs-pgtk.override {
@@ -84,7 +86,8 @@
         swayfx-git = pkgs.callPackage (
           { swayfx }:
           swayfx.override {
-            swayfx-unwrapped = inputs.swayfx-unwrapped-git.packages.${pkgs.system}.swayfx-unwrapped-git;
+            swayfx-unwrapped =
+              inputs.swayfx-unwrapped-git.packages.${pkgs.stdenv.hostPlatform.system}.swayfx-unwrapped-git;
           }
         ) { };
         neovim-unstable = pkgs.callPackage ({ neovim }: neovim) { };
@@ -92,7 +95,7 @@
 
       overlays = {
         default = final: prev: {
-          inherit (outputs.packages.${prev.system})
+          inherit (outputs.packages.${prev.stdenv.hostPlatform.system})
             swayfx-git
             emacs-unstable
             neovim-unstable
