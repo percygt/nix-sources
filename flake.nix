@@ -4,10 +4,12 @@
     extra-substituters = [
       "https://percygtdev.cachix.org"
       "https://nix-community.cachix.org"
+      "https://niri.cachix.org"
     ];
     extra-trusted-public-keys = [
       "percygtdev.cachix.org-1:AGd4bI4nW7DkJgniWF4tS64EX2uSYIGqjZih2UVoxko="
       "nix-community.cachix.org-1:mB9FSh9qf2dCimDSUo8Zy7bkq5CX+/rkCWyvRCYg3Fs="
+      "niri.cachix.org-1:Wv0OmO7PsuocRKzfDoJ3mulSl7Z6oezYhGhR+3W2964="
     ];
   };
   inputs = {
@@ -18,10 +20,7 @@
     nixpkgs.follows = "nixpkgs-unstable";
 
     niri.url = "github:sodiboo/niri-flake";
-    niri.inputs.nixpkgs.follows = "nixpkgs";
-
     swayfx-unwrapped-git.url = "github:WillPower3309/swayfx";
-    # swayfx-unwrapped-git.inputs.nixpkgs.follows = "nixpkgs";
     emacs-overlay.url = "github:nix-community/emacs-overlay/";
     neovim-nightly-overlay.url = "github:nix-community/neovim-nightly-overlay";
   };
@@ -69,7 +68,7 @@
           niri-stable
           niri-unstable
           xwayland-satellite-stable
-          xwayland-satellite-unstable-git
+          xwayland-satellite-unstable
           ;
         # emacs-pgtk = pkgs.callPackage (
         #   { emacs-pgtk }:
