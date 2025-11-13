@@ -82,7 +82,7 @@
             { xwayland-satellite-unstable }: xwayland-satellite-unstable
           ) { };
           neovim-unstable = pkgs.callPackage ({ neovim }: neovim) { };
-          nixos-cli = pkgs.callPackage inputs.nixos-cli.packages."${system}".default { };
+          nixos = inputs.nixos-cli.packages.${system}.default;
 
           # emacs-pgtk = pkgs.callPackage (
           #   { emacs-pgtk }:
@@ -110,6 +110,7 @@
         default = final: prev: {
           inherit (outputs.packages.${prev.stdenv.hostPlatform.system})
             # swayfx-git
+            nixos
             emacs-unstable
             neovim-unstable
             niri-stable
