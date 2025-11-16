@@ -91,7 +91,6 @@
         vpl-gpu-rt = pkgs.callPackage ({ vpl-gpu-rt }: vpl-gpu-rt) { };
         pipewire = pkgs.callPackage ({ pipewire }: pipewire) { };
         foot = pkgs.callPackage ({ foot }: foot) { };
-        brave = pkgs.callPackage ({ brave }: brave) { };
         # swayfx-unstable = pkgs.callPackage (
         #   { swayfx, swayfx-unwrapped }:
         #   swayfx.override {
@@ -146,7 +145,6 @@
             vpl-gpu-rt
             pipewire
             foot
-            brave
             ;
           pkgsi686Linux = prev.pkgsi686Linux // {
             mesa = outputs.packages.${prev.stdenv.hostPlatform.system}.mesa-32;
