@@ -89,7 +89,6 @@
         intel-ocl = pkgs.callPackage ({ intel-ocl }: intel-ocl) { };
         intel-compute-runtime = pkgs.callPackage ({ intel-compute-runtime }: intel-compute-runtime) { };
         vpl-gpu-rt = pkgs.callPackage ({ vpl-gpu-rt }: vpl-gpu-rt) { };
-        pipewire = pkgs.callPackage ({ pipewire }: pipewire) { };
         foot = pkgs.callPackage ({ foot }: foot) { };
         # swayfx-unstable = pkgs.callPackage (
         #   { swayfx, swayfx-unwrapped }:
@@ -146,9 +145,7 @@
             intel-ocl
             intel-compute-runtime
             vpl-gpu-rt
-            pipewire
             foot
-            brave
             ;
 
         };
