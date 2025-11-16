@@ -130,24 +130,27 @@
 
       overlays = {
         default = final: prev: {
+          my = {
+            inherit (outputs.packages.${prev.stdenv.hostPlatform.system})
+              mesa
+              mesa-32
+              intel-vaapi-driver
+              intel-vaapi-driver-32
+              intel-media-driver
+              intel-media-driver-32
+              intel-ocl
+              intel-compute-runtime
+              vpl-gpu-rt
+              ;
+          };
           inherit (outputs.packages.${prev.stdenv.hostPlatform.system})
             niri-stable
             niri-unstable
             # swayfx-unstable
             xwayland-satellite-stable
             xwayland-satellite-unstable
-            mesa
-            mesa-32
-            intel-vaapi-driver
-            intel-vaapi-driver-32
-            intel-media-driver
-            intel-media-driver-32
-            intel-ocl
-            intel-compute-runtime
-            vpl-gpu-rt
             foot
             ;
-
         };
       };
     };
