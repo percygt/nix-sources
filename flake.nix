@@ -96,39 +96,42 @@
         xfce4-terminal = pkgs.callPackage ({ xfce }: xfce.xfce4-terminal) { };
         wezterm = pkgs.callPackage ({ wezterm }: wezterm) { };
         brave = pkgs.callPackage ({ brave }: brave) { };
-        swayfx-unstable = pkgs.swayfx.override {
-          swayfx-unwrapped = pkgs.swayfx-unwrapped.overrideAttrs (old: {
-            version = "git";
-            src = pkgs.lib.cleanSource inputs.swayfx-git;
-            nativeBuildInputs = with pkgs; [
-              meson
-              ninja
-              pkg-config
-              wayland-scanner
-              scdoc
-            ];
-            buildInputs =
-              with pkgs;
-              [
-                libGL
-                wayland
-                libxkbcommon
-                pcre2
-                json_c
-                libevdev
-                pango
-                cairo
-                libinput
-                gdk-pixbuf
-                librsvg
-                wayland-protocols
-                libdrm
-                xorg.xcbutilwm
-                wlroots_0_19
-              ]
-              ++ [ inputs.scenefx.packages.${pkgs.stdenv.hostPlatform.system}.scenefx-git ];
-          });
-        };
+        swayfx-unstable = pkgs.callPackage (
+          { swayfx, swayfx-unwrapped }:
+          swayfx.override {
+            swayfx-unwrapped = swayfx-unwrapped.overrideAttrs (old: {
+              version = "git";
+              src = pkgs.lib.cleanSource inputs.swayfx-git;
+              nativeBuildInputs = with pkgs; [
+                meson
+                ninja
+                pkg-config
+                wayland-scanner
+                scdoc
+              ];
+              buildInputs =
+                with pkgs;
+                [
+                  libGL
+                  wayland
+                  libxkbcommon
+                  pcre2
+                  json_c
+                  libevdev
+                  pango
+                  cairo
+                  libinput
+                  gdk-pixbuf
+                  librsvg
+                  wayland-protocols
+                  libdrm
+                  xorg.xcbutilwm
+                  wlroots_0_19
+                ]
+                ++ [ inputs.scenefx.packages.${pkgs.stdenv.hostPlatform.system}.scenefx-git ];
+            });
+          }
+        ) { };
       });
 
       overlays = {
