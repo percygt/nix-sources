@@ -84,6 +84,28 @@
           neovim-unstable = pkgs.callPackage ({ neovim }: neovim) { };
           nixos = inputs.nixos-cli.packages.${system}.default;
 
+          mesa = pkgs.callPackage ({ mesa }: mesa) { };
+          mesa-32 = pkgs.callPackage ({ pkgsi686Linux }: pkgsi686Linux.mesa) { };
+          intel-vaapi-driver = pkgs.callPackage (
+            { intel-vaapi-driver }:
+            intel-vaapi-driver.override {
+              enableHybridCodec = true;
+            }
+          ) { };
+          intel-vaapi-driver-32 = pkgs.callPackage (
+            { driversi686Linux }:
+            driversi686Linux.intel-vaapi-driver.override {
+              enableHybridCodec = true;
+            }
+          ) { };
+          intel-media-driver = pkgs.callPackage ({ intel-media-driver }: intel-media-driver) { };
+          intel-media-driver-32 = pkgs.callPackage (
+            { driversi686Linux }: driversi686Linux.intel-media-driver
+          ) { };
+          intel-ocl = pkgs.callPackage ({ intel-ocl }: intel-ocl) { };
+          intel-compute-runtime = pkgs.callPackage ({ intel-compute-runtime }: intel-compute-runtime) { };
+          vpl-gpu-rt = pkgs.callPackage ({ vpl-gpu-rt }: vpl-gpu-rt) { };
+
           # emacs-pgtk = pkgs.callPackage (
           #   { emacs-pgtk }:
           #   emacs-pgtk.override {
@@ -118,6 +140,19 @@
             xwayland-satellite-stable
             xwayland-satellite-unstable
             ;
+          my = {
+            inherit (outputs.packages.${prev.stdenv.hostPlatform.system})
+              mesa
+              mesa-32
+              intel-vaapi-driver
+              intel-vaapi-driver-32
+              intel-media-driver
+              intel-media-driver-32
+              intel-ocl
+              intel-compute-runtime
+              vpl-gpu-rt
+              ;
+          };
         };
       };
     };
