@@ -138,21 +138,19 @@
             xwayland-satellite-stable
             xwayland-satellite-unstable
             mesa
+            mesa-32
             intel-vaapi-driver
+            intel-vaapi-driver-32
             intel-media-driver
+            intel-media-driver-32
             intel-ocl
             intel-compute-runtime
             vpl-gpu-rt
             pipewire
             foot
+            brave
             ;
-          pkgsi686Linux = prev.pkgsi686Linux // {
-            mesa = outputs.packages.${prev.stdenv.hostPlatform.system}.mesa-32;
-          };
-          driversi686Linux = prev.driversi686Linux // {
-            intel-vaapi-driver = outputs.packages.${prev.stdenv.hostPlatform.system}.intel-vaapi-driver-32;
-            intel-media-driver = outputs.packages.${prev.stdenv.hostPlatform.system}.intel-media-driver-32;
-          };
+
         };
       };
     };
