@@ -59,7 +59,7 @@
     in
     {
       formatter = forAllSystems (pkgs: pkgs.nixfmt-rfc-style);
-      packages = forAllSystems (pkgs: rec {
+      packages = forAllSystems (pkgs: {
         niri-stable = pkgs.callPackage ({ niri-stable }: niri-stable) { };
         niri-unstable = pkgs.callPackage ({ niri-unstable }: niri-unstable) { };
         xwayland-satellite-stable = pkgs.callPackage (
@@ -96,45 +96,39 @@
         xfce4-terminal = pkgs.callPackage ({ xfce }: xfce.xfce4-terminal) { };
         wezterm = pkgs.callPackage ({ wezterm }: wezterm) { };
         brave = pkgs.callPackage ({ brave }: brave) { };
-        scenefx-git = inputs.scenefx.packages.${pkgs.stdenv.hostPlatform.system}.scenefx-git;
-        swayfx-unwrapped-git = pkgs.swayfx-unwrapped.overrideAttrs (old: {
-          version = "git";
-          src = pkgs.lib.cleanSource inputs.swayfx-git;
-          nativeBuildInputs = with pkgs; [
-            meson
-            ninja
-            pkg-config
-            wayland-scanner
-            scdoc
-          ];
-          buildInputs =
-            with pkgs;
-            [
-              libGL
-              wayland
-              libxkbcommon
-              pcre2
-              json_c
-              libevdev
-              pango
-              cairo
-              libinput
-              gdk-pixbuf
-              librsvg
-              wayland-protocols
-              libdrm
-              xorg.xcbutilwm
-              wlroots_0_19
-            ]
-            ++ [ scenefx-git ];
-        });
-
-        swayfx-unstable = pkgs.callPackage (
-          { swayfx }:
-          swayfx.override {
-            swayfx-unwrapped = swayfx-unwrapped-git;
-          }
-        ) { };
+        swayfx-unstable = pkgs.swayfx.override {
+          swayfx-unwrapped = pkgs.swayfx-unwrapped.overrideAttrs (old: {
+            version = "git";
+            src = pkgs.lib.cleanSource inputs.swayfx-git;
+            nativeBuildInputs = with pkgs; [
+              meson
+              ninja
+              pkg-config
+              wayland-scanner
+              scdoc
+            ];
+            buildInputs =
+              with pkgs;
+              [
+                libGL
+                wayland
+                libxkbcommon
+                pcre2
+                json_c
+                libevdev
+                pango
+                cairo
+                libinput
+                gdk-pixbuf
+                librsvg
+                wayland-protocols
+                libdrm
+                xorg.xcbutilwm
+                wlroots_0_19
+              ]
+              ++ [ inputs.scenefx.packages.${pkgs.stdenv.hostPlatform.system}.scenefx-git ];
+          });
+        };
       });
 
       overlays = {
