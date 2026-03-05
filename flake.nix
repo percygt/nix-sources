@@ -129,7 +129,7 @@
 
       overlays = {
         default = final: prev: {
-          my = {
+          stax = {
             inherit (outputs.packages.${prev.stdenv.hostPlatform.system})
               mesa
               mesa-32
