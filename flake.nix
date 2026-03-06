@@ -20,12 +20,9 @@
     nixpkgs.follows = "nixpkgs-unstable";
 
     niri.url = "github:sodiboo/niri-flake";
-    scenefx = {
-      url = "github:wlrfx/scenefx";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
-    swayfx-git.url = "github:WillPower3309/swayfx";
-    swayfx-git.flake = false;
+
+    hjem.url = "github:feel-co/hjem";
+    hjem.inputs.nixpkgs.follows = "nixpkgs";
   };
   outputs =
     { self, ... }@inputs:
@@ -58,7 +55,7 @@
       forAllSystems = packagesFrom inputs.nixpkgs;
     in
     {
-      formatter = forAllSystems (pkgs: pkgs.nixfmt-rfc-style);
+      formatter = forAllSystems (pkgs: pkgs.nixfmt);
       packages = forAllSystems (pkgs: {
         niri-stable = pkgs.callPackage ({ niri-stable }: niri-stable) { };
         niri-unstable = pkgs.callPackage ({ niri-unstable }: niri-unstable) { };
@@ -68,84 +65,15 @@
         xwayland-satellite-unstable = pkgs.callPackage (
           { xwayland-satellite-unstable }: xwayland-satellite-unstable
         ) { };
-        mesa = pkgs.callPackage ({ mesa }: mesa) { };
-        mesa-32 = pkgs.callPackage ({ pkgsi686Linux }: pkgsi686Linux.mesa) { };
-        intel-vaapi-driver = pkgs.callPackage (
-          { intel-vaapi-driver }:
-          intel-vaapi-driver.override {
-            enableHybridCodec = true;
-          }
-        ) { };
-        intel-vaapi-driver-32 = pkgs.callPackage (
-          { driversi686Linux }:
-          driversi686Linux.intel-vaapi-driver.override {
-            enableHybridCodec = true;
-          }
-        ) { };
-        intel-media-driver = pkgs.callPackage ({ intel-media-driver }: intel-media-driver) { };
-        intel-media-driver-32 = pkgs.callPackage (
-          { driversi686Linux }: driversi686Linux.intel-media-driver
-        ) { };
-        intel-ocl = pkgs.callPackage ({ intel-ocl }: intel-ocl) { };
-        intel-compute-runtime = pkgs.callPackage ({ intel-compute-runtime }: intel-compute-runtime) { };
-        vpl-gpu-rt = pkgs.callPackage ({ vpl-gpu-rt }: vpl-gpu-rt) { };
-        # swayfx-unstable = pkgs.callPackage (
-        #   { swayfx, swayfx-unwrapped }:
-        #   swayfx.override {
-        #     swayfx-unwrapped = swayfx-unwrapped.overrideAttrs (old: {
-        #       version = "git";
-        #       src = pkgs.lib.cleanSource inputs.swayfx-git;
-        #       nativeBuildInputs = with pkgs; [
-        #         meson
-        #         ninja
-        #         pkg-config
-        #         wayland-scanner
-        #         scdoc
-        #       ];
-        #       buildInputs =
-        #         with pkgs;
-        #         [
-        #           libGL
-        #           wayland
-        #           libxkbcommon
-        #           pcre2
-        #           json_c
-        #           libevdev
-        #           pango
-        #           cairo
-        #           libinput
-        #           gdk-pixbuf
-        #           librsvg
-        #           wayland-protocols
-        #           libdrm
-        #           xorg.xcbutilwm
-        #           wlroots_0_19
-        #         ]
-        #         ++ [ inputs.scenefx.packages.${pkgs.stdenv.hostPlatform.system}.scenefx-git ];
-        #     });
-        #   }
-        # ) { };
+        smfh-unstable = inputs.hjem.packages.${pkgs.stdenv.hostPlatform.system}.smfh;
       });
 
       overlays = {
         default = final: prev: {
-          stax = {
-            inherit (outputs.packages.${prev.stdenv.hostPlatform.system})
-              mesa
-              mesa-32
-              intel-vaapi-driver
-              intel-vaapi-driver-32
-              intel-media-driver
-              intel-media-driver-32
-              intel-ocl
-              intel-compute-runtime
-              vpl-gpu-rt
-              ;
-          };
           inherit (outputs.packages.${prev.stdenv.hostPlatform.system})
             niri-stable
             niri-unstable
-            # swayfx-unstable
+            smfh-unstable
             xwayland-satellite-stable
             xwayland-satellite-unstable
             ;
