@@ -24,6 +24,7 @@
     hjem.url = "github:feel-co/hjem";
     hjem.inputs.nixpkgs.follows = "nixpkgs";
   };
+
   outputs =
     { self, ... }@inputs:
     let
