@@ -8,8 +8,11 @@ name: Update and cache
     - cron: 0 16 * * 6,2 # 12:00AM PHT Sun,Wed
     # - cron: "0 * * * *" # Hourly. We want it to run frequently.
 
+permissions:
+  contents: write
+
 jobs:
-  caching:
+  update-flake:
     runs-on: ubuntu-latest
     steps:
       - name: Free Disk Space (Ubuntu)
@@ -34,15 +37,21 @@ jobs:
           git config user.name github-actions
           git config user.email github-actions@github.com
 
+      - name: Run update script
+        run: |
+          chmod +x brave-update.sh
+          ./brave-update.sh
+
       - name: Update flake inputs
         run: |
           nix flake update --accept-flake-config
-          git commit -m "Updated flake inputs" flake.lock || true
 
-      - name: Push commit with updated inputs
-        run: |
-          git pull --rebase --autostash
-          git push
+      - name: Commit and Push changes
+        uses: stefanzweifel/git-auto-commit-action@v7
+        with:
+          commit_message: "chore: update flakes"
+          file_pattern: "*.nix *.lock pkgs/*.nix"
+          branch: main
 
       - name: Check for changes
         uses: dorny/paths-filter@v3

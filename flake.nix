@@ -57,21 +57,31 @@
     in
     {
       formatter = forAllSystems (pkgs: pkgs.nixfmt);
-      packages = forAllSystems (pkgs: {
-        niri-stable = pkgs.callPackage ({ niri-stable }: niri-stable) { };
-        niri-unstable = pkgs.callPackage ({ niri-unstable }: niri-unstable) { };
-        xwayland-satellite-stable = pkgs.callPackage (
-          { xwayland-satellite-stable }: xwayland-satellite-stable
-        ) { };
-        xwayland-satellite-unstable = pkgs.callPackage (
-          { xwayland-satellite-unstable }: xwayland-satellite-unstable
-        ) { };
-        smfh-unstable = inputs.hjem.packages.${pkgs.stdenv.hostPlatform.system}.smfh;
-      });
+      packages = forAllSystems (
+        pkgs:
+        let
+          mkBrave = release: pkgs.callPackage ./make-brave.nix { } (import release);
+        in
+        {
+          brave-origin-beta = mkBrave ./packages/brave-origin-beta.nix;
+          brave-origin-nightly = mkBrave ./packages/brave-origin-nightly.nix;
+          niri-stable = pkgs.callPackage ({ niri-stable }: niri-stable) { };
+          niri-unstable = pkgs.callPackage ({ niri-unstable }: niri-unstable) { };
+          xwayland-satellite-stable = pkgs.callPackage (
+            { xwayland-satellite-stable }: xwayland-satellite-stable
+          ) { };
+          xwayland-satellite-unstable = pkgs.callPackage (
+            { xwayland-satellite-unstable }: xwayland-satellite-unstable
+          ) { };
+          smfh-unstable = inputs.hjem.packages.${pkgs.stdenv.hostPlatform.system}.smfh;
+        }
+      );
 
       overlays = {
         default = final: prev: {
           inherit (outputs.packages.${prev.stdenv.hostPlatform.system})
+            brave-origin-beta
+            brave-origin-nightly
             niri-stable
             niri-unstable
             smfh-unstable
