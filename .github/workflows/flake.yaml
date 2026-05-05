@@ -50,7 +50,7 @@ jobs:
         uses: stefanzweifel/git-auto-commit-action@v7
         with:
           commit_message: "chore: update flakes"
-          file_pattern: "*.nix *.lock pkgs/*.nix"
+          file_pattern: "*.nix *.lock packages/*.nix"
           branch: main
 
       - name: Check for changes
