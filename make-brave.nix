@@ -49,50 +49,29 @@
   coreutils,
   libxcb,
   zlib,
-
-  # Darwin dependencies
   unzip,
   makeWrapper,
-
-  # command line arguments which are always set e.g "--disable-gpu"
   commandLineArgs ? "",
-
-  # Necessary for USB audio devices.
+  # Extra raw flags appended after all other flags.
+  # Useful for renderer tuning (e.g. --use-gl=angle) without baking them in.
+  extraBraveFlags ? [ ],
   pulseSupport ? stdenv.hostPlatform.isLinux,
   libpulseaudio,
-
-  # For GPU acceleration support on Wayland (without the lib it doesn't seem to work)
   libGL,
-
-  # For video acceleration via VA-API (--enable-features=AcceleratedVideoDecodeLinuxGL,AcceleratedVideoEncoder)
   libvaSupport ? stdenv.hostPlatform.isLinux,
   libva,
   enableVideoAcceleration ? libvaSupport,
-
-  # For Vulkan support (--enable-features=Vulkan); disabled by default as it seems to break VA-API
   vulkanSupport ? false,
   addDriverRunpath,
   enableVulkan ? vulkanSupport,
 }:
-
 {
   pname,
   version,
-  # Map from Nix system strings ("x86_64-linux", "aarch64-darwin", ...) to
-  # the corresponding upstream `{ url, hash }` record. Encoding the per-system
-  # sources as data rather than positional arguments lets channel-specific
-  # package.nix files drop platforms that upstream hasn't published yet.
   archives,
-  # Release channel: "stable", "beta" or "nightly". Selects the upstream
-  # filesystem layout (opt directory, desktop files, icon names, darwin app
-  # bundle name) produced by the matching .deb / .zip artifact.
   channel ? "stable",
-  # Upstream product flavor: "browser" (the regular Brave) or "origin" (the
-  # stripped-down Brave Origin). Origin has no stable channel upstream, so
-  # flavor = "origin" implies channel != "stable".
   flavor ? "browser",
 }:
-
 let
   inherit (lib)
     optional
@@ -105,8 +84,6 @@ let
     escapeShellArg
     ;
 
-  # Flavor-specific naming stems. browser follows the historical Brave layout;
-  # origin uses a parallel tree under /opt/brave.com/brave-origin-<channel>/.
   flavorData = {
     browser = {
       optStem = "brave";
@@ -114,7 +91,6 @@ let
       appIdStem = "com.brave.Browser";
       darwinStem = "Brave Browser";
       changelogFile = "CHANGELOG_DESKTOP.md";
-      # browser ships its icons with a channel suffix in the filename.
       iconsCarryChannelSuffix = true;
       homepages = {
         stable = "https://brave.com/";
@@ -128,8 +104,6 @@ let
       appIdStem = "com.brave.Origin";
       darwinStem = "Brave Origin";
       changelogFile = "CHANGELOG_DESKTOP_ORIGIN.md";
-      # origin keeps icons un-suffixed, because the parent directory already
-      # encodes the channel.
       iconsCarryChannelSuffix = false;
       homepages = {
         beta = "https://brave.com/origin/download-beta/";
@@ -140,7 +114,6 @@ let
 
   fd = flavorData.${flavor};
 
-  # Suffix used by upstream for non-stable channels.
   channelDashSuffix = if channel == "stable" then "" else "-${channel}";
   channelDotSuffix = if channel == "stable" then "" else ".${channel}";
   channelSpaceSuffix =
@@ -149,23 +122,23 @@ let
     else
       " ${lib.toUpper (lib.substring 0 1 channel)}${lib.substring 1 (-1) channel}";
 
-  # /opt/brave.com/<optName>/
   optName = fd.optStem + channelDashSuffix;
-  # Basename used for .desktop, gnome-control-center xml and icon files.
   fileBase = fd.fileStem + channelDashSuffix;
-  # Secondary .desktop app-id.
   appId = fd.appIdStem + channelDotSuffix;
-  # Upstream shell wrapper inside /opt.
   innerWrapper = fileBase;
-  # macOS .app bundle name (inside the zip).
   darwinApp = fd.darwinStem + channelSpaceSuffix;
-  # Upstream Exec= target in .desktop files (replaced with our wrapper).
-  # browser-stable uniquely uses "brave-browser-stable" rather than the plain
-  # filename stem; every other combination matches `fileBase`.
+
   upstreamBin =
     if flavor == "browser" && channel == "stable" then "brave-browser-stable" else fileBase;
-  # Upstream icon filename suffix ("_beta", "_nightly", or empty).
+
+  # Icon suffix used in *filenames* inside /opt (e.g. product_logo_16_beta.png).
   iconSuffix = if fd.iconsCarryChannelSuffix && channel != "stable" then "_${channel}" else "";
+
+  # The name GTK looks up via XDG_DATA_DIRS.  We normalise to the fileStem
+  # (dropping the channel suffix) so that e.g. both brave-browser and
+  # brave-browser-beta resolve to the same visual icon family, and so that the
+  # Icon= line in .desktop files matches what we actually install.
+  iconName = fd.fileStem;
 
   deps = [
     alsa-lib
@@ -217,6 +190,7 @@ let
   rpath = makeLibraryPath deps + ":" + makeSearchPathOutput "lib" "lib64" deps;
   binpath = makeBinPath deps;
 
+  # Current Chromium feature flag names (the Vaapi* names were removed).
   enableFeatures =
     optionals enableVideoAcceleration [
       "AcceleratedVideoDecodeLinuxGL"
@@ -226,8 +200,7 @@ let
 
   disableFeatures = [
     "OutdatedBuildDetector"
-  ] # disable automatic updates
-  # The feature disable is needed for VAAPI to work correctly: https://github.com/brave/brave-browser/issues/20935
+  ]
   ++ optionals enableVideoAcceleration [ "UseChromeOSDirectVideoDecoder" ];
 
   archive =
@@ -246,13 +219,13 @@ stdenv.mkDerivation {
   dontConfigure = true;
   dontBuild = true;
   dontPatchELF = true;
+  dontCheckForBrokenSymlinks = true;
+
   doInstallCheck = stdenv.hostPlatform.isLinux;
 
   nativeBuildInputs =
     lib.optionals stdenv.hostPlatform.isLinux [
       dpkg
-      # override doesn't preserve splicing https://github.com/NixOS/nixpkgs/issues/132651
-      # Has to use `makeShellWrapper` from `buildPackages` even though `makeShellWrapper` from the inputs is spliced because `propagatedBuildInputs` would pick the wrong one because of a different offset.
       (buildPackages.wrapGAppsHook3.override { makeWrapper = buildPackages.makeShellWrapper; })
     ]
     ++ lib.optionals stdenv.hostPlatform.isDarwin [
@@ -261,13 +234,10 @@ stdenv.mkDerivation {
     ];
 
   buildInputs = lib.optionals stdenv.hostPlatform.isLinux [
-    # needed for GSETTINGS_SCHEMAS_PATH
     glib
     gsettings-desktop-schemas
     gtk3
     gtk4
-
-    # needed for XDG_ICON_DIRS
     adwaita-icon-theme
   ];
 
@@ -276,66 +246,65 @@ stdenv.mkDerivation {
       runHook preInstall
 
       mkdir -p $out $out/bin
-
       cp -R usr/share $out
       cp -R opt/ $out/opt
 
       export BINARYWRAPPER=$out/opt/brave.com/${optName}/${innerWrapper}
 
-      # Fix path to bash in $BINARYWRAPPER
       substituteInPlace $BINARYWRAPPER \
-          --replace-fail /bin/bash ${stdenv.shell} \
-          --replace-fail 'CHROME_WRAPPER' 'WRAPPER'
+        --replace-fail /bin/bash ${stdenv.shell} \
+        --replace-fail 'CHROME_WRAPPER' 'WRAPPER'
 
       ln -sf $BINARYWRAPPER $out/bin/${pname}
 
       for exe in $out/opt/brave.com/${optName}/{brave,chrome_crashpad_handler}; do
-          patchelf \
-              --set-interpreter "$(cat $NIX_CC/nix-support/dynamic-linker)" \
-              --set-rpath "${rpath}" $exe
+        patchelf \
+          --set-interpreter "$(cat $NIX_CC/nix-support/dynamic-linker)" \
+          --set-rpath "${rpath}" $exe
       done
 
-      # Fix paths
+      # Fix Exec= path and normalise Icon= to the channel-agnostic fileStem so
+      # the name matches the hicolor symlinks we create below.
       substituteInPlace $out/share/applications/{${fileBase},${appId}}.desktop \
-          --replace-fail /usr/bin/${upstreamBin} $out/bin/${pname}
+        --replace-fail /usr/bin/${upstreamBin} $out/bin/${pname} \
+        --replace-fail "Icon=${fileBase}"       "Icon=${iconName}"
+
       substituteInPlace $out/share/gnome-control-center/default-apps/${fileBase}.xml \
-          --replace-fail /opt/brave.com $out/opt/brave.com
+        --replace-fail /opt/brave.com $out/opt/brave.com
+
       substituteInPlace $out/opt/brave.com/${optName}/default-app-block \
-          --replace-fail /opt/brave.com $out/opt/brave.com
+        --replace-fail /opt/brave.com $out/opt/brave.com
 
-      # Correct icons location
+      # Install icons under the normalised name (iconName, no channel suffix)
+      # so they match the Icon= key we set above.
       icon_sizes=("16" "24" "32" "48" "64" "128" "256")
-
-      for icon in ''${icon_sizes[*]}
-      do
-          mkdir -p $out/share/icons/hicolor/''${icon}x''${icon}/apps
-          ln -s $out/opt/brave.com/${optName}/product_logo_''${icon}${iconSuffix}.png $out/share/icons/hicolor/''${icon}x''${icon}/apps/${fileBase}.png
+      for icon in ''${icon_sizes[*]}; do
+        mkdir -p $out/share/icons/hicolor/''${icon}x''${icon}/apps
+        ln -s \
+          $out/opt/brave.com/${optName}/product_logo_''${icon}${iconSuffix}.png \
+          $out/share/icons/hicolor/''${icon}x''${icon}/apps/${iconName}.png
       done
 
-      # Replace xdg-settings and xdg-mime
       ln -sf ${xdg-utils}/bin/xdg-settings $out/opt/brave.com/${optName}/xdg-settings
-      ln -sf ${xdg-utils}/bin/xdg-mime $out/opt/brave.com/${optName}/xdg-mime
+      ln -sf ${xdg-utils}/bin/xdg-mime     $out/opt/brave.com/${optName}/xdg-mime
 
       runHook postInstall
     ''
     + lib.optionalString stdenv.hostPlatform.isDarwin ''
       runHook preInstall
-
       mkdir -p $out/{Applications,bin}
-
       cp -r . "$out/Applications/${darwinApp}.app"
-
-      makeWrapper "$out/Applications/${darwinApp}.app/Contents/MacOS/${darwinApp}" $out/bin/${pname}
-
+      makeWrapper \
+        "$out/Applications/${darwinApp}.app/Contents/MacOS/${darwinApp}" \
+        $out/bin/${pname}
       runHook postInstall
     '';
 
   preFixup = lib.optionalString stdenv.hostPlatform.isLinux ''
-    # Add command line args to wrapGApp.
     gappsWrapperArgs+=(
       --prefix LD_LIBRARY_PATH : ${rpath}
-      --prefix PATH : ${binpath}
-      --suffix PATH : ${
+      --prefix PATH            : ${binpath}
+      --suffix PATH            : ${
         lib.makeBinPath [
           xdg-utils
           coreutils
@@ -348,30 +317,21 @@ stdenv.mkDerivation {
       ${optionalString (disableFeatures != [ ]) ''
         --add-flags "--disable-features=${strings.concatStringsSep "," disableFeatures}"
       ''}
+      ${optionalString (extraBraveFlags != [ ]) ''
+        --add-flags "${strings.concatStringsSep " " extraBraveFlags}"
+      ''}
       --add-flags "\''${NIXOS_OZONE_WL:+\''${WAYLAND_DISPLAY:+--ozone-platform-hint=auto}}"
       ${optionalString vulkanSupport ''
-        --prefix XDG_DATA_DIRS  : "${addDriverRunpath.driverLink}/share"
+        --prefix XDG_DATA_DIRS : "${addDriverRunpath.driverLink}/share"
       ''}
       --add-flags ${escapeShellArg commandLineArgs}
     )
   '';
 
+  # Bypass the upstream shell wrapper so stderr is not suppressed.
   installCheckPhase = ''
-    # Bypass upstream wrapper which suppresses errors
     $out/opt/brave.com/${optName}/brave --version
   '';
-
-  postInstall = ''
-    for icon in $out/share/icons/hicolor/*/apps/${optName}.png; do
-      if [ -L "$icon" ]; then
-        rm "$icon"
-        cp "$(readlink -f "$icon" 2>/dev/null || echo "")" "$icon" 2>/dev/null || \
-        cp $out/opt/brave.com/${optName}/product_logo_*.png "$icon" 2>/dev/null || true
-      fi
-    done
-  '';
-
-  dontCheckForBrokenSymlinks = true;
 
   passthru.updateScript = ./update.sh;
 
@@ -396,12 +356,10 @@ stdenv.mkDerivation {
         ''
           Brave browser blocks the ads and trackers that slow you down,
           chew up your bandwidth, and invade your privacy. Brave lets you
-          contribute to your favorite creators automatically.
+          contribute to your favourite creators automatically.
         '';
     sourceProvenance = with lib.sourceTypes; [ binaryNativeCode ];
     license = lib.licenses.mpl20;
-    maintainers = with lib.maintainers; [
-    ];
     platforms = builtins.attrNames archives;
     mainProgram = pname;
   };
