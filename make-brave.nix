@@ -361,6 +361,18 @@ stdenv.mkDerivation {
     $out/opt/brave.com/${optName}/brave --version
   '';
 
+  postInstall = ''
+    for icon in $out/share/icons/hicolor/*/apps/${optName}.png; do
+      if [ -L "$icon" ]; then
+        rm "$icon"
+        cp "$(readlink -f "$icon" 2>/dev/null || echo "")" "$icon" 2>/dev/null || \
+        cp $out/opt/brave.com/${optName}/product_logo_*.png "$icon" 2>/dev/null || true
+      fi
+    done
+  '';
+
+  dontCheckForBrokenSymlinks = true;
+
   passthru.updateScript = ./update.sh;
 
   meta = {
