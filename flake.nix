@@ -14,10 +14,10 @@
   };
   inputs = {
     # channel urls are faster and more reliable than github -.-
-    nixpkgs-stable.url = "https://channels.nixos.org/nixos-25.11/nixexprs.tar.xz";
-    nixpkgs-old.url = "https://channels.nixos.org/nixos-24.11/nixexprs.tar.xz";
+    nixpkgs-stable.url = "https://channels.nixos.org/nixos-26.05/nixexprs.tar.xz";
+    nixpkgs-25-11.url = "https://channels.nixos.org/nixos-25.11/nixexprs.tar.xz";
+    nixpkgs-25-05.url = "https://channels.nixos.org/nixos-25.05/nixexprs.tar.xz";
     nixpkgs-unstable.url = "https://channels.nixos.org/nixos-unstable/nixexprs.tar.xz";
-
     nixpkgs-master.url = "github:nixos/nixpkgs/master";
     nixpkgs.follows = "nixpkgs-unstable";
 
