@@ -75,7 +75,6 @@
           xwayland-satellite-unstable = pkgs.callPackage (
             { xwayland-satellite-unstable }: xwayland-satellite-unstable
           ) { };
-          smfh-unstable = inputs.hjem.packages.${pkgs.stdenv.hostPlatform.system}.smfh;
         }
       );
 
@@ -86,7 +85,6 @@
             brave-origin-nightly
             niri-stable
             niri-unstable
-            smfh-unstable
             xwayland-satellite-stable
             xwayland-satellite-unstable
             ;
